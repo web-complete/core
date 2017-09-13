@@ -1,6 +1,7 @@
 <?php
 
 use Doctrine\DBAL\DriverManager;
+use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntityEntityRepositoryDb;
 use WebComplete\core\factory\ObjectFactory;
@@ -41,7 +42,7 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
     public function testFindOne()
     {
         $stmt = $this->createMock(\Doctrine\DBAL\Statement::class);
-        $stmt->method('fetch')->willReturn([['a' => 1]]);
+        $stmt->method('fetch')->willReturn(['a' => 1, 'arr' => '[1,2,3]', 'arr2' => null]);
 
         $qb = $this->createMock(\Doctrine\DBAL\Query\QueryBuilder::class);
         $qb->method('where')->willReturnSelf();
@@ -51,11 +52,11 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
         $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->willReturn(2);
+        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null])->willReturn(2);
 
         $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
-        $this->assertEquals(2, $rep->findOne(new \WebComplete\core\condition\Condition()));
+        $this->assertEquals(2, $rep->findOne(new Condition()));
     }
 
     public function testFindAll()
@@ -83,7 +84,7 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
 
         $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
-        $this->assertEquals([11 => $o1,12 => $o2], $rep->findAll(new \WebComplete\core\condition\Condition()));
+        $this->assertEquals([11 => $o1,12 => $o2], $rep->findAll(new Condition()));
     }
 
     public function testCount()
@@ -101,7 +102,7 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
 
         $rep = $this->createRep(null, null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
-        $this->assertEquals(3, $rep->count(new \WebComplete\core\condition\Condition()));
+        $this->assertEquals(3, $rep->count(new Condition()));
     }
 
     public function testSaveNew()
@@ -109,7 +110,7 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $o1 = new AbstractEntityRepositoryDbTestEntity();
         $o1->a = 1;
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
-        $conn->expects($this->once())->method('insert')->with(null, ['a' => 1]);
+        $conn->expects($this->once())->method('insert')->with('tbl', ['a' => 1, 'arr' => null, 'arr2' => null]);
         $conn->expects($this->once())->method('lastInsertId')->willReturn(22);
         $rep = $this->createRep(null, null, null, $conn);
         $rep->save($o1);
@@ -121,8 +122,9 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $o1 = new AbstractEntityRepositoryDbTestEntity();
         $o1->setId(33);
         $o1->a = 2;
+        $o1->arr = [1,2,3];
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
-        $conn->expects($this->once())->method('update')->with(null, ['id' => 33, 'a' => 2], ['id' => 33]);
+        $conn->expects($this->once())->method('update')->with('tbl', ['id' => 33, 'a' => 2, 'arr' => '[1,2,3]', 'arr2' => null], ['id' => 33]);
         $rep = $this->createRep(null, null, null, $conn);
         $rep->save($o1);
         $this->assertEquals(33, $o1->getId());
@@ -133,24 +135,21 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $o1 = new AbstractEntityRepositoryDbTestEntity();
         $o1->setId(44);
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
-        $conn->expects($this->once())->method('delete')->with(null, ['id' => 44]);
+        $conn->expects($this->once())->method('delete')->with('tbl', ['id' => 44]);
         $rep = $this->createRep(null, null, null, $conn);
         $rep->delete($o1->getId());
     }
 
     public function testSelectQuery()
     {
-
-    }
-
-    public function testSerializeFields()
-    {
-
-    }
-
-    public function testUnserializeFields()
-    {
-
+        $rep = $this->createRep();
+        $class = new ReflectionClass($rep);
+        $method = $class->getMethod('selectQuery');
+        $method->setAccessible(true);
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $qb */
+        $qb = $method->invokeArgs($rep, [new Condition(['a' => 1])]);
+        $sql = $qb->getSQL();
+        $this->assertEquals('SELECT t1.* FROM tbl t1 WHERE a = :dcValue1', $sql);
     }
 
     /**
@@ -171,6 +170,16 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $conn = $c ?: DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
 
         $aer = $this->getMockForAbstractClass(AbstractEntityEntityRepositoryDb::class, [$of, $hydrator, $parser, $conn], '', true, true, true, $mockedMethods);
+        $reflection = new ReflectionClass($aer);
+        $reflection_property = $reflection->getProperty('table');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($aer, 'tbl');
+        $reflection_property = $reflection->getProperty('serializeFields');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($aer, ['arr', 'arr2']);
+        $reflection_property = $reflection->getProperty('serializeStrategy');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($aer, AbstractEntityEntityRepositoryDb::SERIALIZE_STRATEGY_JSON);
         return $aer;
     }
 
@@ -178,4 +187,6 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
 
 class AbstractEntityRepositoryDbTestEntity extends \WebComplete\core\entity\AbstractEntity {
     public $a;
+    public $arr;
+    public $arr2;
 }

@@ -143,7 +143,7 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
     protected function selectQuery(Condition $condition = null)
     {
         $queryBuilder = $this->db->createQueryBuilder();
-        $queryBuilder->select()->from($this->table, 't1');
+        $queryBuilder->select(['t1.*'])->from($this->table, 't1');
         $this->conditionParser->parse($queryBuilder, $condition);
         return $queryBuilder;
     }
