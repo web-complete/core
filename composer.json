@@ -1,0 +1,30 @@
+{
+  "name": "web-complete/entity",
+  "description": "WebComplete architecture core for DDD",
+  "license": "MIT",
+  "keywords": ["entity", "service", "resource", "core", "DDD"],
+  "authors": [
+    {
+      "name": "Maxim Kasatkin",
+      "email": "mvkasatkin@gmail.com"
+    },
+    {
+      "name": "Sergey Saraikin",
+      "email": "ssaraikin@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "psr/container": "^1.0",
+    "php-di/php-di": "^5.4",
+    "doctrine/dbal": "^2.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6"
+  },
+  "autoload": {
+    "psr-4": {
+      "WebComplete\\core\\": "src"
+    }
+  }
+}
