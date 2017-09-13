@@ -12,14 +12,14 @@ class HydratorTest extends \PHPUnit\Framework\TestCase
         $o->setB2('value2');
         $o->setB3('value3');
         $this->assertEquals(['v_1' => 'value1', 'v_2' => 'value2', 'v_3' => 'value3'],
-            (new \WebComplete\core\hydrator\Hydrator())->extract($o, $this->map));
+            (new \WebComplete\core\utils\hydrator\Hydrator())->extract($o, $this->map));
     }
 
     public function testHydrateClass()
     {
         $data = ['v_1' => 'value1', 'v_2' => 'value2', 'v_3' => 'value3'];
         /** @var HydratorTestClass $o */
-        $o = (new \WebComplete\core\hydrator\Hydrator())->hydrate($data, HydratorTestClass::class, $this->map);
+        $o = (new \WebComplete\core\utils\hydrator\Hydrator())->hydrate($data, HydratorTestClass::class, $this->map);
         $this->assertEquals('value1', $o->a1);
         $this->assertEquals('value2', $o->getB2());
         $this->assertEquals('value3', $o->getB3());
@@ -30,7 +30,7 @@ class HydratorTest extends \PHPUnit\Framework\TestCase
         $data = ['v_1' => 'value1', 'v_2' => 'value2', 'v_3' => 'value3', 'v_4' => 'value4'];
         $o = new HydratorTestClass();
         $o->a1 = 'some';
-        $o = (new \WebComplete\core\hydrator\Hydrator())->hydrate($data, $o, $this->map);
+        $o = (new \WebComplete\core\utils\hydrator\Hydrator())->hydrate($data, $o, $this->map);
         $this->assertEquals('value1', $o->a1);
         $this->assertEquals('value2', $o->getB2());
         $this->assertEquals('value3', $o->getB3());
@@ -43,14 +43,14 @@ class HydratorTest extends \PHPUnit\Framework\TestCase
         $o->setB2('value2');
         $o->setB3('value3');
         $this->assertEquals(['a1' => 'value1', 'b2' => 'value2', 'b3' => 'value3'],
-            (new \WebComplete\core\hydrator\Hydrator())->extract($o));
+            (new \WebComplete\core\utils\hydrator\Hydrator())->extract($o));
     }
 
     public function testHydrateWithoutMap()
     {
         $data = ['b2' => 'value2', 'b3' => 'value3', 'b4' => 'value4'];
         /** @var HydratorTestClass $o */
-        $o = (new \WebComplete\core\hydrator\Hydrator())->hydrate($data, HydratorTestClass::class);
+        $o = (new \WebComplete\core\utils\hydrator\Hydrator())->hydrate($data, HydratorTestClass::class);
         $this->assertEquals(null, $o->a1);
         $this->assertEquals('value2', $o->getB2());
         $this->assertEquals('value3', $o->getB3());

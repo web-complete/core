@@ -5,7 +5,7 @@ namespace WebComplete\core\entity;
 use Doctrine\DBAL\Connection;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\hydrator\HydratorInterface;
+use WebComplete\core\utils\hydrator\HydratorInterface;
 use WebComplete\core\condition\Condition;
 
 

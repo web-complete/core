@@ -1,6 +1,6 @@
 <?php
 
-namespace WebComplete\core\container;
+namespace WebComplete\core\utils\container;
 
 
 interface ContainerInterface extends \Psr\Container\ContainerInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace WebComplete\core\hydrator;
+namespace WebComplete\core\utils\hydrator;
 
 
 class Hydrator implements HydratorInterface

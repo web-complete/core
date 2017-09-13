@@ -2,7 +2,7 @@
 
 use WebComplete\core\entity\AbstractEntityRepository;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\hydrator\Hydrator;
+use WebComplete\core\utils\hydrator\Hydrator;
 
 class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
 {

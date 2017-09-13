@@ -5,17 +5,17 @@ class ContainerAdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testHas()
     {
-        $container = new \WebComplete\core\container\ContainerAdapter();
+        $container = new \WebComplete\core\utils\container\ContainerAdapter();
         $e = null;
         try { $container->has('a'); }
         catch (\Exception $e) { }
-        $this->assertInstanceOf(\WebComplete\core\container\ContainerException::class, $e);
+        $this->assertInstanceOf(\WebComplete\core\utils\container\ContainerException::class, $e);
 
         $container->setContainer(new stdClass());
         $e = null;
         try { $container->has('a'); }
         catch (\Exception $e) { }
-        $this->assertInstanceOf(\WebComplete\core\container\ContainerException::class, $e);
+        $this->assertInstanceOf(\WebComplete\core\utils\container\ContainerException::class, $e);
 
         $dic = $this->getMockForAbstractClass(\Psr\Container\ContainerInterface::class);
         $dic->expects($this->once())->method('has')->with('a')->willReturn(true);
@@ -25,17 +25,17 @@ class ContainerAdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testGet()
     {
-        $container = new \WebComplete\core\container\ContainerAdapter();
+        $container = new \WebComplete\core\utils\container\ContainerAdapter();
         $e = null;
         try { $container->get('a'); }
         catch (\Exception $e) { }
-        $this->assertInstanceOf(\WebComplete\core\container\ContainerException::class, $e);
+        $this->assertInstanceOf(\WebComplete\core\utils\container\ContainerException::class, $e);
 
         $container->setContainer(new stdClass());
         $e = null;
         try { $container->get('a'); }
         catch (\Exception $e) { }
-        $this->assertInstanceOf(\WebComplete\core\container\ContainerException::class, $e);
+        $this->assertInstanceOf(\WebComplete\core\utils\container\ContainerException::class, $e);
 
         $dic = $this->getMockForAbstractClass(\Psr\Container\ContainerInterface::class);
         $dic->expects($this->once())->method('get')->with('a')->willReturn('b');
@@ -45,17 +45,17 @@ class ContainerAdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testMake()
     {
-        $container = new \WebComplete\core\container\ContainerAdapter();
+        $container = new \WebComplete\core\utils\container\ContainerAdapter();
         $e = null;
         try { $container->make('a'); }
         catch (\Exception $e) { }
-        $this->assertInstanceOf(\WebComplete\core\container\ContainerException::class, $e);
+        $this->assertInstanceOf(\WebComplete\core\utils\container\ContainerException::class, $e);
 
         $container->setContainer(new stdClass());
         $e = null;
         try { $container->make('a'); }
         catch (\Exception $e) { }
-        $this->assertInstanceOf(\WebComplete\core\container\ContainerException::class, $e);
+        $this->assertInstanceOf(\WebComplete\core\utils\container\ContainerException::class, $e);
 
         $dic = $this->createMock(ContainerAdapterTestC::class);
         $dic->expects($this->once())->method('make')->with('a')->willReturn('b');

@@ -3,7 +3,7 @@
 namespace WebComplete\core\entity;
 
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\hydrator\HydratorInterface;
+use WebComplete\core\utils\hydrator\HydratorInterface;
 
 
 abstract class AbstractEntityRepository implements EntityRepositoryInterface

@@ -2,7 +2,7 @@
 
 namespace WebComplete\core\factory;
 
-use WebComplete\core\container\ContainerInterface;
+use WebComplete\core\utils\container\ContainerInterface;
 
 /**
  * Class AbstractFactory

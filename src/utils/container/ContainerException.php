@@ -1,6 +1,6 @@
 <?php
 
-namespace WebComplete\core\container;
+namespace WebComplete\core\utils\container;
 
 
 class ContainerException extends \Exception

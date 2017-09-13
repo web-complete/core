@@ -1,7 +1,7 @@
 <?php
 
 use WebComplete\core\condition\Condition;
-use WebComplete\core\container\ContainerInterface;
+use WebComplete\core\utils\container\ContainerInterface;
 use WebComplete\core\factory\ConditionFactory;
 
 class ConditionFactoryTest extends \PHPUnit\Framework\TestCase

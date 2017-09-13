@@ -6,7 +6,7 @@ use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityEntityRepositoryDb;
 use WebComplete\core\entity\AbstractEntityRepository;
 use WebComplete\core\entity\AbstractEntityService;
-use WebComplete\core\hydrator\Hydrator;
+use WebComplete\core\utils\hydrator\Hydrator;
 
 class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
 {

@@ -5,7 +5,7 @@ use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntityEntityRepositoryDb;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\hydrator\Hydrator;
+use WebComplete\core\utils\hydrator\Hydrator;
 
 class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
 {

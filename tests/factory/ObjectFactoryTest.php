@@ -1,9 +1,9 @@
 <?php
 
-use WebComplete\core\container\ContainerInterface;
+use WebComplete\core\utils\container\ContainerInterface;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\hydrator\Hydrator;
-use WebComplete\core\hydrator\HydratorInterface;
+use WebComplete\core\utils\hydrator\Hydrator;
+use WebComplete\core\utils\hydrator\HydratorInterface;
 
 class ObjectFactoryTest extends \PHPUnit\Framework\TestCase
 {

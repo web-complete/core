@@ -2,8 +2,8 @@
 
 namespace WebComplete\core\factory;
 
-use WebComplete\core\container\ContainerInterface;
-use WebComplete\core\hydrator\HydratorInterface;
+use WebComplete\core\utils\container\ContainerInterface;
+use WebComplete\core\utils\hydrator\HydratorInterface;
 
 /**
  * Class ObjectFactory
