@@ -138,6 +138,21 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $rep->delete($o1->getId());
     }
 
+    public function testSelectQuery()
+    {
+
+    }
+
+    public function testSerializeFields()
+    {
+
+    }
+
+    public function testUnserializeFields()
+    {
+
+    }
+
     /**
      * @param null $of
      * @param null $h
