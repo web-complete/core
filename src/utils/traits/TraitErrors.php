@@ -11,10 +11,10 @@ trait TraitErrors
     protected $_errors = [];
 
     /**
-     * @param $error
      * @param string $code
+     * @param $error
      */
-    public function addError($error, $code = '_')
+    public function addError($code, $error)
     {
         if(!isset($this->_errors[$code])) {
             $this->_errors[$code] = [];
@@ -23,31 +23,53 @@ trait TraitErrors
     }
 
     /**
-     * @param string $code
+     * @param null|string $code
      * @return bool
      */
-    public function hasErrors($code = '_')
+    public function hasErrors($code = null)
     {
         return count($this->getErrors($code)) > 0;
     }
 
     /**
-     * @param string $code
+     * @param null|string $code
      * @return array
      */
-    public function getErrors($code = '_')
+    public function getErrors($code = null)
     {
-        return isset($this->_errors[$code])
-            ? $this->_errors[$code]
-            : [];
+        if($code) {
+            return isset($this->_errors[$code])
+                ? $this->_errors[$code]
+                : [];
+        }
+        return $this->_errors;
     }
 
     /**
-     * @param string $code
+     * @return array
      */
-    public function resetErrors($code = '_')
+    public function getFirstErrors()
     {
-        unset($this->_errors[$code]);
+        $result = [];
+        foreach ($this->getErrors() as $field => $errors) {
+            if($errors) {
+                $result[$field] = reset($errors);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param null|string $code
+     */
+    public function resetErrors($code = null)
+    {
+        if($code) {
+            unset($this->_errors[$code]);
+        }
+        else {
+            $this->_errors = [];
+        }
     }
 
 }
