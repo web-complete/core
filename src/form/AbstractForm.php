@@ -3,10 +3,6 @@
 namespace WebComplete\core\form;
 
 
-use WebComplete\core\utils\invoker\Invoker;
-use WebComplete\core\utils\invoker\InvokerException;
-use WebComplete\core\utils\invoker\InvokerInterface;
-
 abstract class AbstractForm
 {
 
@@ -28,15 +24,10 @@ abstract class AbstractForm
     protected $validatorFactory;
 
     /**
-     * @var InvokerInterface
-     */
-    protected $invoker;
-
-    /**
      * @return array [[field, validator, params, message], ...]
      *
      * validator - is a string equals to method of ValidatorFactory, method of the form or callable.
-     * Validator will be invoked with named params.
+     * Validator should be declared as ($value, $params) : bool
      *
      * example
      * ```
@@ -57,7 +48,7 @@ abstract class AbstractForm
      * @return array [[field, filter, params], ...]
      *
      * filter - is a string equals to method of FilterFactory, method of the form or callable
-     * Filter will be invoked with named params.
+     * Filter should be declared as ($value, $params) : mixed, and return filtered value
      *
      * example
      * ```
@@ -79,19 +70,16 @@ abstract class AbstractForm
      * @param null|array $filters
      * @param null|object $filterFactory
      * @param null|object $validatorFactory
-     * @param null|InvokerInterface $invoker
      */
     public function __construct(
         $rules = null,
         $filters = null,
         $filterFactory = null,
-        $validatorFactory = null,
-        InvokerInterface $invoker = null
+        $validatorFactory = null
     )
     {
         $this->filterFactory = $filterFactory;
         $this->validatorFactory = $validatorFactory;
-        $this->invoker = $invoker ?: new Invoker();
 
         $this->rules = is_array($rules)
             ? array_merge($this->rules(), $rules)
@@ -132,8 +120,7 @@ abstract class AbstractForm
             if(isset($definitions[$field])) {
                 foreach ($definitions[$field] as $definition) {
                     $defName = array_shift($definition);
-                    $defParams = array_shift($definition);
-                    $defParams['value'] = $value;
+                    $defParams = array_merge([$value], array_shift($definition));
                     $defMessage = array_shift($definition) ?: $this->defaultError;
 
                     if(is_callable($defName)) {
@@ -145,7 +132,8 @@ abstract class AbstractForm
                     else {
                         $callable = [$this, $defName];
                     }
-                    if(!$this->invoker->call($callable, $defParams)) {
+
+                    if(!call_user_func_array($callable, $defParams)) {
                         $this->addError($field, $defMessage);
                     }
                 }
@@ -231,8 +219,6 @@ abstract class AbstractForm
     /**
      * @param array $data
      * @return array
-     *
-     * @throws InvokerException
      */
     protected function filter(array $data)
     {
@@ -242,8 +228,7 @@ abstract class AbstractForm
             if(isset($definitions[$field])) {
                 foreach ($definitions[$field] as $definition) {
                     $defName = array_shift($definition);
-                    $defParams = array_shift($definition);
-                    $defParams['value'] = $value;
+                    $defParams = array_merge([$value], array_shift($definition));
 
                     if(is_callable($defName)) {
                         $callable = $defName;
@@ -254,7 +239,7 @@ abstract class AbstractForm
                     else {
                         $callable = [$this, $defName];
                     }
-                    $data[$field] = $this->invoker->call($callable, $defParams);
+                    $data[$field] = call_user_func_array($callable, $defParams);
                 }
             }
         }

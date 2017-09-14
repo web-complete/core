@@ -1,5 +1,5 @@
 {
-  "name": "web-complete/entity",
+  "name": "web-complete/core",
   "description": "WebComplete architecture core for DDD",
   "license": "MIT",
   "keywords": ["entity", "service", "resource", "core", "DDD"],
@@ -17,7 +17,6 @@
     "php": ">=7.0.0",
     "psr/container": "^1.0",
     "php-di/php-di": "^5.4",
-    "php-di/invoker": "*",
     "doctrine/dbal": "^2.5"
   },
   "require-dev": {
