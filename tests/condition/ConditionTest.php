@@ -16,6 +16,7 @@ class ConditionTest extends \PHPUnit\Framework\TestCase
         $condition->addGreaterOrEqualsCondition('f', 6);
         $condition->addBetweenCondition('g', 7, 8);
         $condition->addInCondition('h', [9, 10]);
+        $condition->addLikeCondition('i', 'asd', true, false);
         $condition->addSort('f1', SORT_ASC);
         $condition->addSort('f2', SORT_DESC);
         $condition->offset(5);
@@ -33,6 +34,7 @@ class ConditionTest extends \PHPUnit\Framework\TestCase
             [Condition::GREATER_OR_EQUALS, 'f', 6],
             [Condition::BETWEEN, 'g', 7, 8],
             [Condition::IN, 'h', [9, 10], false],
+            [Condition::LIKE, 'i', 'asd', true, false],
         ], $condition->getConditions());
     }
 
@@ -47,6 +49,7 @@ class ConditionTest extends \PHPUnit\Framework\TestCase
             [Condition::GREATER_OR_EQUALS, 'f', 6],
             [Condition::BETWEEN, 'g', 7, 8],
             [Condition::IN, 'h', [9, 10]],
+            [Condition::LIKE, 'i', 'asd', true, false],
         ], 'f1', SORT_DESC, 10, 5);
 
         $this->assertEquals(10, $condition->getOffset());
@@ -61,6 +64,7 @@ class ConditionTest extends \PHPUnit\Framework\TestCase
             [Condition::GREATER_OR_EQUALS, 'f', 6],
             [Condition::BETWEEN, 'g', 7, 8],
             [Condition::IN, 'h', [9, 10]],
+            [Condition::LIKE, 'i', 'asd', true, false],
         ], $condition->getConditions());
     }
 

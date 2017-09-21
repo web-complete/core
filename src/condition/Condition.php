@@ -13,7 +13,8 @@ class Condition
     const LESS_OR_EQUALS    = 5;
     const GREATER_OR_EQUALS = 6;
     const BETWEEN           = 7;
-    const IN                = 8;
+    const LIKE              = 8;
+    const IN                = 9;
 
     protected $conditions   = [];
     protected $sort         = [];
@@ -123,6 +124,20 @@ class Condition
 
     /**
      * @param string $field
+     * @param $value
+     * @param bool $left
+     * @param bool $right
+     *
+     * @return $this
+     */
+    public function addLikeCondition(string $field, $value, $left = true, $right = true)
+    {
+        $this->conditions[] = [self::LIKE, $field, $value, $left, $right];
+        return $this;
+    }
+
+    /**
+     * @param string $field
      * @param array $array
      * @param bool $isNumeric
      * @return $this
@@ -134,15 +149,12 @@ class Condition
     }
 
     /**
-     * @param $sortField
-     * @param $sortDir
+     * @param string $sortField
+     * @param int $sortDir SORT FLAG (SORT_ASC, SORT_DESC)
      * @return $this
      */
     public function addSort(string $sortField, int $sortDir)
     {
-        if(!is_numeric($sortDir)) {
-            $sortDir = strtolower($sortDir) == 'asc' ? SORT_ASC : SORT_DESC;
-        }
         $this->sort[$sortField] = $sortDir;
         return $this;
     }

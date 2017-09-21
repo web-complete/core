@@ -40,6 +40,12 @@ class ConditionDbParser
                         $queryBuilder->andWhere("{$cond[0]} BETWEEN " . $queryBuilder->createNamedParameter($cond[1])
                             . " AND " . $queryBuilder->createNamedParameter($cond[2]));
                         break;
+                    case Condition::LIKE:
+                        $value = $cond[2] ? '%' : '';
+                        $value .= $cond[1];
+                        $value .= $cond[3] ? '%' : '';
+                        $queryBuilder->andWhere("{$cond[0]} LIKE " . $queryBuilder->createNamedParameter($value));
+                        break;
                     case Condition::IN:
                         if($cond[1]) {
                             $isNumeric = $cond[2];
