@@ -22,10 +22,10 @@ class AliasHelper
      * @param $alias
      * @param bool $throwException
      *
-     * @return string
+     * @return string|null
      * @throws \Exception
      */
-    public static function get($alias, $throwException = true): string
+    public static function get($alias, $throwException = true)
     {
         return self::getInstance()->get($alias, $throwException);
     }
@@ -40,6 +40,7 @@ class AliasHelper
 
     /**
      * @return AliasService
+     * @throws \WebComplete\core\utils\alias\AliasException
      */
     protected static function getInstance(): AliasService
     {
