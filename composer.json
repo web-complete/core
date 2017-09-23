@@ -20,7 +20,8 @@
     "doctrine/dbal": "^2.5"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6"
+    "phpunit/phpunit": "^6",
+    "mvkasatkin/mocker": "^1"
   },
   "autoload": {
     "psr-4": {
