@@ -2,7 +2,6 @@
 
 namespace WebComplete\core\utils\container;
 
-
 interface ContainerInterface extends \Psr\Container\ContainerInterface
 {
 
@@ -13,5 +12,4 @@ interface ContainerInterface extends \Psr\Container\ContainerInterface
      * @return mixed
      */
     public function make($name);
-
 }

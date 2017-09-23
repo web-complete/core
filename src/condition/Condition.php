@@ -2,10 +2,8 @@
 
 namespace WebComplete\core\condition;
 
-
 class Condition
 {
-
     const EQUALS            = 1;
     const NOT_EQUALS        = 2;
     const LESS_THAN         = 3;
@@ -18,28 +16,33 @@ class Condition
 
     protected $conditions   = [];
     protected $sort         = [];
-    protected $offset       = null;
-    protected $limit        = null;
+    protected $offsetValue;
+    protected $limitValue;
 
     /**
      * @param array $conditions
      * @param string|null $sortField
-     * @param string|null $sortDir
+     * @param int|null $sortDir
      * @param int|null $offset
      * @param int|null $limit
      */
-    public function __construct(array $conditions = [], string $sortField = null, string $sortDir = null, int $offset = null, int $limit = null)
-    {
-        if($conditions = $this->parseConditionsArg($conditions)) {
+    public function __construct(
+        array $conditions = [],
+        string $sortField = null,
+        int $sortDir = null,
+        int $offset = null,
+        int $limit = null
+    ) {
+        if ($conditions = $this->parseConditionsArg($conditions)) {
             $this->conditions = $conditions;
         }
-        if($sortField && $sortDir) {
+        if ($sortField !== null && $sortDir !== null) {
             $this->addSort($sortField, $sortDir);
         }
-        if($offset) {
+        if ($offset !== null) {
             $this->offset($offset);
         }
-        if($limit) {
+        if ($limit !== null) {
             $this->limit($limit);
         }
     }
@@ -165,7 +168,7 @@ class Condition
      */
     public function offset(int $offset)
     {
-        $this->offset = $offset;
+        $this->offsetValue = $offset;
         return $this;
     }
 
@@ -175,14 +178,14 @@ class Condition
      */
     public function limit(int $limit)
     {
-        $this->limit = $limit;
+        $this->limitValue = $limit;
         return $this;
     }
 
     /**
      * @return array
      */
-    public function getConditions()
+    public function getConditions(): array
     {
         return $this->conditions;
     }
@@ -190,44 +193,43 @@ class Condition
     /**
      * @return array
      */
-    public function getSort()
+    public function getSort(): array
     {
         return $this->sort;
     }
 
     /**
-     * @return null
+     * @return null|int
      */
     public function getOffset()
     {
-        return $this->offset;
+        return $this->offsetValue;
     }
 
     /**
-     * @return null
+     * @return null|int
      */
     public function getLimit()
     {
-        return $this->limit;
+        return $this->limitValue;
     }
 
     /**
      * @param $conditions
      * @return array
      */
-    protected function parseConditionsArg($conditions)
+    protected function parseConditionsArg($conditions): array
     {
         $result = [];
-        if(is_array($conditions)) {
+        if (\is_array($conditions)) {
             foreach ($conditions as $k => $v) {
-                if(is_numeric($k) && is_array($v)) {
+                if (\is_numeric($k) && \is_array($v)) {
                     $result[] = $v;
                 }
-                else if(is_string($k) && $v) {
-                    if(is_scalar($v)) {
+                if (\is_string($k) && $v) {
+                    if (\is_scalar($v)) {
                         $result[] = [self::EQUALS, $k, $v];
-                    }
-                    else if(is_array($v)) {
+                    } elseif (\is_array($v)) {
                         $result[] = [self::IN, $k, $v];
                     }
                 }
@@ -235,5 +237,4 @@ class Condition
         }
         return $result;
     }
-
 }

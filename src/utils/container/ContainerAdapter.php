@@ -2,12 +2,14 @@
 
 namespace WebComplete\core\utils\container;
 
-
 class ContainerAdapter implements ContainerInterface
 {
 
     private $container;
 
+    /**
+     * @param object $container
+     */
     public function __construct($container = null)
     {
         $this->container = $container;
@@ -28,15 +30,13 @@ class ContainerAdapter implements ContainerInterface
      */
     public function get($id)
     {
-        if(!$this->container) {
+        if (!$this->container) {
             throw new ContainerException('Container not injected');
         }
-        if(method_exists($this->container, 'get')) {
+        if (\method_exists($this->container, 'get')) {
             return $this->container->get($id);
         }
-        else {
-            throw new ContainerException('Container method not found: get');
-        }
+        throw new ContainerException('Container method not found: get');
     }
 
     /**
@@ -46,15 +46,13 @@ class ContainerAdapter implements ContainerInterface
      */
     public function has($id)
     {
-        if(!$this->container) {
+        if (!$this->container) {
             throw new ContainerException('Container not injected');
         }
-        if(method_exists($this->container, 'has')) {
+        if (\method_exists($this->container, 'has')) {
             return $this->container->has($id);
         }
-        else {
-            throw new ContainerException('Container method not found: has');
-        }
+        throw new ContainerException('Container method not found: has');
     }
 
     /**
@@ -64,15 +62,13 @@ class ContainerAdapter implements ContainerInterface
      */
     public function make($id)
     {
-        if(!$this->container) {
+        if (!$this->container) {
             throw new ContainerException('Container not injected');
         }
-        if(method_exists($this->container, 'make')) {
+        if (\method_exists($this->container, 'make')) {
             return $this->container->make($id);
         }
-        else {
-            throw new ContainerException('Container method not found: make');
-        }
+        throw new ContainerException('Container method not found: make');
     }
 
 }

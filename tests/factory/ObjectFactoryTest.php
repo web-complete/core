@@ -7,7 +7,6 @@ use WebComplete\core\utils\hydrator\HydratorInterface;
 
 class ObjectFactoryTest extends \PHPUnit\Framework\TestCase
 {
-
     public function testCreate()
     {
         $container = $this->getMockForAbstractClass(ContainerInterface::class);
@@ -32,7 +31,6 @@ class ObjectFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('v1', $object->a1);
         $this->assertEquals('v2', $object->a2);
     }
-
 }
 
 class ObjectFactoryTest1

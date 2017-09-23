@@ -2,7 +2,6 @@
 
 namespace WebComplete\core\utils\hydrator;
 
-
 interface HydratorInterface
 {
 
@@ -14,7 +13,7 @@ interface HydratorInterface
      * @param array $map fieldName: propertyName
      * @return object
      */
-    public function hydrate(array $data, $objectOrClass, $map = []);
+    public function hydrate(array $data, $objectOrClass, array $map = null);
 
     /**
      * extract object properties to data
@@ -23,6 +22,5 @@ interface HydratorInterface
      * @param array $map fieldName: propertyName
      * @return array
      */
-    public function extract($object, $map = []);
-
+    public function extract($object, array $map = null): array;
 }

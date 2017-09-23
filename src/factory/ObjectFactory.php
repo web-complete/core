@@ -24,16 +24,15 @@ class ObjectFactory extends AbstractFactory
     /**
      * @param ContainerInterface $container
      * @param HydratorInterface $hydrator
-     * @param null $objectClass
+     * @param string|null $objectClass
      */
     public function __construct(
         ContainerInterface $container,
         HydratorInterface $hydrator,
-        $objectClass = null
-    )
-    {
+        string $objectClass = null
+    ) {
         parent::__construct($container);
-        if($objectClass !== null) {
+        if ($objectClass !== null) {
             $this->objectClass = $objectClass;
         }
         $this->hydrator = $hydrator;
@@ -57,5 +56,4 @@ class ObjectFactory extends AbstractFactory
         $this->hydrator->hydrate($data, $object);
         return $object;
     }
-
 }

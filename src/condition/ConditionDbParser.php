@@ -4,19 +4,18 @@ namespace WebComplete\core\condition;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 
-
 class ConditionDbParser
 {
 
     public function parse(QueryBuilder $queryBuilder, Condition $condition = null)
     {
-        if(!$condition) {
+        if ($condition === null) {
             return;
         }
         foreach ($condition->getConditions() as $cond) {
-            if(is_array($cond)) {
-                $cond = array_values($cond);
-                $type = array_shift($cond);
+            if (\is_array($cond)) {
+                $cond = \array_values($cond);
+                $type = \array_shift($cond);
                 switch ($type) {
                     case Condition::EQUALS:
                         $queryBuilder->andWhere("{$cond[0]} = " . $queryBuilder->createNamedParameter($cond[1]));
@@ -38,7 +37,7 @@ class ConditionDbParser
                         break;
                     case Condition::BETWEEN:
                         $queryBuilder->andWhere("{$cond[0]} BETWEEN " . $queryBuilder->createNamedParameter($cond[1])
-                            . " AND " . $queryBuilder->createNamedParameter($cond[2]));
+                            . ' AND ' . $queryBuilder->createNamedParameter($cond[2]));
                         break;
                     case Condition::LIKE:
                         $value = $cond[2] ? '%' : '';
@@ -47,15 +46,16 @@ class ConditionDbParser
                         $queryBuilder->andWhere("{$cond[0]} LIKE " . $queryBuilder->createNamedParameter($value));
                         break;
                     case Condition::IN:
-                        if($cond[1]) {
+                        if ($cond[1]) {
                             $isNumeric = $cond[2];
                             $sql = '';
-                            foreach ($cond[1] as $v) {
+                            /** @var array $values */
+                            $values = $cond[1];
+                            foreach ($values as $v) {
                                 $sql .= ($isNumeric ? (float)$v : $queryBuilder->createNamedParameter($v)) . ',';
                             }
-                            $queryBuilder->andWhere("{$cond[0]} IN (" . rtrim($sql, ',') . ")");
-                        }
-                        else {
+                            $queryBuilder->andWhere("{$cond[0]} IN (" . \rtrim($sql, ',') . ')');
+                        } else {
                             $queryBuilder->andWhere('1 = 2'); // IN empty array is always false
                         }
                         break;
@@ -64,16 +64,15 @@ class ConditionDbParser
         }
 
         foreach ($condition->getSort() as $field => $direction) {
-            $queryBuilder->orderBy($field, $direction == SORT_DESC ? 'desc' : 'asc');
+            $queryBuilder->orderBy($field, $direction === \SORT_DESC ? 'desc' : 'asc');
         }
 
-        if($offset = $condition->getOffset()) {
+        if ($offset = (int)$condition->getOffset()) {
             $queryBuilder->setFirstResult($offset);
         }
 
-        if($limit = $condition->getLimit()) {
+        if ($limit = (int)$condition->getLimit()) {
             $queryBuilder->setMaxResults($limit);
         }
     }
-
 }

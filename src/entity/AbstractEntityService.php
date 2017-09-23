@@ -4,7 +4,6 @@ namespace WebComplete\core\entity;
 
 use WebComplete\core\condition\Condition;
 
-
 abstract class AbstractEntityService implements EntityRepositoryInterface
 {
 
@@ -13,7 +12,9 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      */
     protected $repository;
 
-
+    /**
+     * @param EntityRepositoryInterface $repository
+     */
     public function __construct(EntityRepositoryInterface $repository)
     {
         $this->repository = $repository;
@@ -22,7 +23,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     /**
      * Proxy method
      * @param \Closure $closure
-     * @return bool
+     * @throws \Exception
      */
     public function transaction(\Closure $closure)
     {
@@ -33,7 +34,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      * Proxy method
      * @return AbstractEntity
      */
-    public function create()
+    public function create(): AbstractEntity
     {
         return $this->repository->create();
     }
@@ -63,7 +64,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      * @param Condition $condition
      * @return AbstractEntity[]
      */
-    public function findAll(Condition $condition)
+    public function findAll(Condition $condition): array
     {
         return $this->repository->findAll($condition);
     }
@@ -73,7 +74,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      * @param Condition $condition
      * @return int
      */
-    public function count(Condition $condition)
+    public function count(Condition $condition): int
     {
         return $this->repository->count($condition);
     }
@@ -95,5 +96,4 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     {
         return $this->repository->delete($id);
     }
-
 }

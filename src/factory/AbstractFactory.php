@@ -33,5 +33,4 @@ abstract class AbstractFactory
     {
         return $this->container->make($name);
     }
-
 }

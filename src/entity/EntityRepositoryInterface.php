@@ -4,19 +4,19 @@ namespace WebComplete\core\entity;
 
 use WebComplete\core\condition\Condition;
 
-
 interface EntityRepositoryInterface
 {
 
     /**
      * @param \Closure $closure
+     * @throws \Exception
      */
     public function transaction(\Closure $closure);
 
     /**
      * @return AbstractEntity
      */
-    public function create();
+    public function create(): AbstractEntity;
 
     /**
      * @param $id
@@ -34,13 +34,13 @@ interface EntityRepositoryInterface
      * @param Condition $condition
      * @return AbstractEntity[]
      */
-    public function findAll(Condition $condition);
+    public function findAll(Condition $condition): array;
 
     /**
      * @param Condition $condition
      * @return int
      */
-    public function count(Condition $condition);
+    public function count(Condition $condition): int;
 
     /**
      * @param AbstractEntity $item
@@ -51,5 +51,4 @@ interface EntityRepositoryInterface
      * @param $id
      */
     public function delete($id);
-
 }

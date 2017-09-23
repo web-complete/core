@@ -5,7 +5,6 @@ namespace WebComplete\core\entity;
 use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\HydratorInterface;
 
-
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
 
@@ -19,7 +18,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     protected $hydrator;
 
-
+    /**
+     * @param ObjectFactory $factory
+     * @param HydratorInterface $hydrator
+     */
     public function __construct(ObjectFactory $factory, HydratorInterface $hydrator)
     {
         $this->factory = $factory;
@@ -27,11 +29,13 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @return AbstractEntity|object
+     * @return AbstractEntity
      */
-    public function create()
+    public function create(): AbstractEntity
     {
-        return $this->factory->create();
+        $result = $this->factory->create();
+        /** @var AbstractEntity $result */
+        return $result;
     }
 
     /**
@@ -39,5 +43,4 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param $data
      */
     abstract protected function beforeDataSave(&$data);
-
 }

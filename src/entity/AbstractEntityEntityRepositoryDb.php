@@ -3,15 +3,14 @@
 namespace WebComplete\core\entity;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\HydratorInterface;
 use WebComplete\core\condition\Condition;
 
-
 abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
 {
-
     const SERIALIZE_STRATEGY_JSON = 1;
     const SERIALIZE_STRATEGY_PHP  = 2;
 
@@ -27,13 +26,18 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
      */
     protected $conditionParser;
 
-
+    /**
+     * @param ObjectFactory $factory
+     * @param HydratorInterface $hydrator
+     * @param ConditionDbParser $conditionParser
+     * @param Connection $db
+     */
     public function __construct(
         ObjectFactory $factory,
         HydratorInterface $hydrator,
         ConditionDbParser $conditionParser,
-        Connection $db)
-    {
+        Connection $db
+    ) {
         parent::__construct($factory, $hydrator);
         $this->db = $db;
         $this->conditionParser = $conditionParser;
@@ -50,14 +54,15 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
 
     /**
      * @param $id
-     * @return AbstractEntity|object|null
+     * @return AbstractEntity|null
      */
     public function findById($id)
     {
         $result = null;
         $select = $this->selectQuery()->where('t1 = :id')->setParameter(':id', $id);
-        if($row = $select->execute()->fetch()) {
+        if ($row = $select->execute()->fetch()) {
             $this->unserializeFields($row);
+            /** @var AbstractEntity $result */
             $result = $this->factory->createFromData($row);
         }
 
@@ -66,14 +71,15 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
 
     /**
      * @param Condition $condition
-     * @return AbstractEntity|object|null
+     * @return AbstractEntity|null
      */
     public function findOne(Condition $condition)
     {
         $result = null;
         $select = $this->selectQuery($condition);
-        if($row = $select->execute()->fetch()) {
+        if ($row = $select->execute()->fetch()) {
             $this->unserializeFields($row);
+            /** @var AbstractEntity $result */
             $result = $this->factory->createFromData($row);
         }
 
@@ -84,11 +90,11 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
      * @param Condition $condition
      * @return AbstractEntity[]
      */
-    public function findAll(Condition $condition)
+    public function findAll(Condition $condition): array
     {
         $result = [];
         $select = $this->selectQuery($condition);
-        if($rows = $select->execute()->fetchAll(\PDO::FETCH_ASSOC)) {
+        if ($rows = $select->execute()->fetchAll(\PDO::FETCH_ASSOC)) {
             foreach ($rows as $row) {
                 $this->unserializeFields($row);
                 /** @var AbstractEntity $entity */
@@ -104,7 +110,7 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
      * @param Condition $condition
      * @return int
      */
-    public function count(Condition $condition)
+    public function count(Condition $condition): int
     {
         $select = $this->selectQuery($condition);
         return $select->select(['id'])->execute()->rowCount();
@@ -118,18 +124,19 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
         $data = $this->hydrator->extract($item);
         $this->beforeDataSave($data);
         $this->serializeFields($data);
-        if($id = $item->getId()) {
+        if ($id = $item->getId()) {
             $this->db->update($this->table, $data, ['id' => $id]);
-        }
-        else {
+        } else {
             unset($data['id']);
             $this->db->insert($this->table, $data);
-            $item->setId($this->db->lastInsertId());
+            $item->setId((int)$this->db->lastInsertId());
         }
     }
 
     /**
      * @param $id
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function delete($id)
     {
@@ -138,9 +145,9 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
 
     /**
      * @param Condition|null $condition
-     * @return \Doctrine\DBAL\Query\QueryBuilder
+     * @return QueryBuilder
      */
-    protected function selectQuery(Condition $condition = null)
+    protected function selectQuery(Condition $condition = null): QueryBuilder
     {
         $queryBuilder = $this->db->createQueryBuilder();
         $queryBuilder->select(['t1.*'])->from($this->table, 't1');
@@ -162,10 +169,10 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
     private function serializeFields(&$data)
     {
         foreach ($this->serializeFields as $field) {
-            if(isset($data[$field])) {
-                $data[$field] = $this->serializeStrategy == self::SERIALIZE_STRATEGY_JSON
-                    ? json_encode($data[$field])
-                    : serialize($data[$field]);
+            if (isset($data[$field])) {
+                $data[$field] = $this->serializeStrategy === self::SERIALIZE_STRATEGY_JSON
+                    ? \json_encode($data[$field])
+                    : \serialize($data[$field]);
             }
         }
     }
@@ -176,12 +183,11 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
     private function unserializeFields(&$row)
     {
         foreach ($this->serializeFields as $field) {
-            if(isset($row[$field])) {
-                $row[$field] = $this->serializeStrategy == self::SERIALIZE_STRATEGY_JSON
-                    ? json_decode($row[$field], true)
-                    : unserialize($row[$field]);
+            if (isset($row[$field])) {
+                $row[$field] = $this->serializeStrategy === self::SERIALIZE_STRATEGY_JSON
+                    ? \json_decode($row[$field], true)
+                    : \unserialize($row[$field], ['allowed_classes' => true]);
             }
         }
     }
-
 }
