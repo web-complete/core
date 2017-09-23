@@ -3,7 +3,7 @@
 use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntity;
-use WebComplete\core\entity\AbstractEntityEntityRepositoryDb;
+use WebComplete\core\entity\AbstractEntityRepositoryDb;
 use WebComplete\core\entity\AbstractEntityRepository;
 use WebComplete\core\entity\AbstractEntityService;
 use WebComplete\core\utils\hydrator\Hydrator;
@@ -65,7 +65,7 @@ class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
         $conn = \Doctrine\DBAL\DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
 
         $aer = $this->getMockForAbstractClass(
-            AbstractEntityEntityRepositoryDb::class,
+            AbstractEntityRepositoryDb::class,
             [$of, $hydrator, $parser, $conn], '', true,
             true, true, $methods);
 

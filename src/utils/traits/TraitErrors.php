@@ -7,8 +7,7 @@ namespace WebComplete\core\utils\traits;
  */
 trait TraitErrors
 {
-
-    protected $_errors = [];
+    protected $errors = [];
 
     /**
      * @param string $code
@@ -16,44 +15,42 @@ trait TraitErrors
      */
     public function addError($code, $error)
     {
-        if(!isset($this->_errors[$code])) {
-            $this->_errors[$code] = [];
+        if (!isset($this->errors[$code])) {
+            $this->errors[$code] = [];
         }
-        $this->_errors[$code][] = $error;
+        $this->errors[$code][] = $error;
     }
 
     /**
      * @param null|string $code
      * @return bool
      */
-    public function hasErrors($code = null)
+    public function hasErrors($code = null): bool
     {
-        return count($this->getErrors($code)) > 0;
+        return \count($this->getErrors($code)) > 0;
     }
 
     /**
      * @param null|string $code
      * @return array
      */
-    public function getErrors($code = null)
+    public function getErrors($code = null): array
     {
-        if($code) {
-            return isset($this->_errors[$code])
-                ? $this->_errors[$code]
-                : [];
+        if ($code !== null) {
+            return $this->errors[$code] ?? [];
         }
-        return $this->_errors;
+        return $this->errors;
     }
 
     /**
      * @return array
      */
-    public function getFirstErrors()
+    public function getFirstErrors(): array
     {
         $result = [];
         foreach ($this->getErrors() as $field => $errors) {
-            if($errors) {
-                $result[$field] = reset($errors);
+            if ($errors) {
+                $result[$field] = \reset($errors);
             }
         }
         return $result;
@@ -64,12 +61,10 @@ trait TraitErrors
      */
     public function resetErrors($code = null)
     {
-        if($code) {
-            unset($this->_errors[$code]);
-        }
-        else {
-            $this->_errors = [];
+        if ($code !== null) {
+            unset($this->errors[$code]);
+        } else {
+            $this->errors = [];
         }
     }
-
 }

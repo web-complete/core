@@ -3,7 +3,7 @@
 use Doctrine\DBAL\DriverManager;
 use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
-use WebComplete\core\entity\AbstractEntityEntityRepositoryDb;
+use WebComplete\core\entity\AbstractEntityRepositoryDb;
 use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\Hydrator;
 
@@ -158,7 +158,8 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
      * @param null $p
      * @param null $c
      * @param array $mockedMethods
-     * @return PHPUnit_Framework_MockObject_MockObject|AbstractEntityEntityRepositoryDb
+     *
+     * @return PHPUnit_Framework_MockObject_MockObject|AbstractEntityRepositoryDb
      */
     protected  function createRep($of = null, $h = null, $p = null, $c = null, $mockedMethods = [])
     {
@@ -169,7 +170,7 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $parser = $p ?: new ConditionDbParser();
         $conn = $c ?: DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
 
-        $aer = $this->getMockForAbstractClass(AbstractEntityEntityRepositoryDb::class, [$of, $hydrator, $parser, $conn], '', true, true, true, $mockedMethods);
+        $aer = $this->getMockForAbstractClass(AbstractEntityRepositoryDb::class, [$of, $hydrator, $parser, $conn], '', true, true, true, $mockedMethods);
         $reflection = new ReflectionClass($aer);
         $reflection_property = $reflection->getProperty('table');
         $reflection_property->setAccessible(true);
@@ -179,7 +180,7 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setValue($aer, ['arr', 'arr2']);
         $reflection_property = $reflection->getProperty('serializeStrategy');
         $reflection_property->setAccessible(true);
-        $reflection_property->setValue($aer, AbstractEntityEntityRepositoryDb::SERIALIZE_STRATEGY_JSON);
+        $reflection_property->setValue($aer, AbstractEntityRepositoryDb::SERIALIZE_STRATEGY_JSON);
         return $aer;
     }
 

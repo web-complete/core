@@ -9,7 +9,7 @@ use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\HydratorInterface;
 use WebComplete\core\condition\Condition;
 
-abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
+abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
 {
     const SERIALIZE_STRATEGY_JSON = 1;
     const SERIALIZE_STRATEGY_PHP  = 2;
@@ -58,15 +58,7 @@ abstract class AbstractEntityEntityRepositoryDb extends AbstractEntityRepository
      */
     public function findById($id)
     {
-        $result = null;
-        $select = $this->selectQuery()->where('t1 = :id')->setParameter(':id', $id);
-        if ($row = $select->execute()->fetch()) {
-            $this->unserializeFields($row);
-            /** @var AbstractEntity $result */
-            $result = $this->factory->createFromData($row);
-        }
-
-        return $result;
+        return $this->findOne(new Condition(['t1.id' => $id]));
     }
 
     /**

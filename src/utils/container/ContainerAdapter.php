@@ -4,7 +4,6 @@ namespace WebComplete\core\utils\container;
 
 class ContainerAdapter implements ContainerInterface
 {
-
     private $container;
 
     /**
@@ -30,13 +29,7 @@ class ContainerAdapter implements ContainerInterface
      */
     public function get($id)
     {
-        if (!$this->container) {
-            throw new ContainerException('Container not injected');
-        }
-        if (\method_exists($this->container, 'get')) {
-            return $this->container->get($id);
-        }
-        throw new ContainerException('Container method not found: get');
+        return $this->call('get', $id);
     }
 
     /**
@@ -46,13 +39,7 @@ class ContainerAdapter implements ContainerInterface
      */
     public function has($id)
     {
-        if (!$this->container) {
-            throw new ContainerException('Container not injected');
-        }
-        if (\method_exists($this->container, 'has')) {
-            return $this->container->has($id);
-        }
-        throw new ContainerException('Container method not found: has');
+        return $this->call('has', $id);
     }
 
     /**
@@ -62,13 +49,24 @@ class ContainerAdapter implements ContainerInterface
      */
     public function make($id)
     {
+        return $this->call('make', $id);
+    }
+
+    /**
+     * @param $method
+     * @param $id
+     *
+     * @return mixed
+     * @throws ContainerException
+     */
+    protected function call($method, $id)
+    {
         if (!$this->container) {
             throw new ContainerException('Container not injected');
         }
-        if (\method_exists($this->container, 'make')) {
-            return $this->container->make($id);
+        if (\method_exists($this->container, $method)) {
+            return $this->container->$method($id);
         }
-        throw new ContainerException('Container method not found: make');
+        throw new ContainerException('Container method not found: ' . $method);
     }
-
 }
