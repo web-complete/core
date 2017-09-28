@@ -23,5 +23,4 @@ class AbstractEntity
     {
         $this->id = $id;
     }
-
 }
