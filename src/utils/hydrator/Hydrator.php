@@ -2,6 +2,8 @@
 
 namespace WebComplete\core\utils\hydrator;
 
+use ReflectionProperty;
+
 class Hydrator implements HydratorInterface
 {
 
@@ -33,9 +35,8 @@ class Hydrator implements HydratorInterface
             $map = \array_combine($map, $map);
         }
         foreach ($map as $fieldName => $propertyName) {
-            if ($reflection->hasProperty($propertyName) && isset($data[$fieldName])) {
-                $property = $reflection->getProperty($propertyName);
-                $property->setAccessible(true);
+            if (isset($data[$fieldName]) && $reflection->hasProperty($propertyName)) {
+                $property = $this->getProperty($reflection, $propertyName);
                 $property->setValue($object, $data[$fieldName]);
             }
         }
@@ -65,8 +66,7 @@ class Hydrator implements HydratorInterface
         }
         foreach ($map as $fieldName => $propertyName) {
             if ($reflection->hasProperty($propertyName)) {
-                $property = $reflection->getProperty($propertyName);
-                $property->setAccessible(true);
+                $property = $this->getProperty($reflection, $propertyName);
                 $result[$fieldName] = $property->getValue($object);
             }
         }
@@ -101,5 +101,18 @@ class Hydrator implements HydratorInterface
             }
         }
         return $this->reflectionsPropertyList[$className];
+    }
+
+    /**
+     * @param \ReflectionClass $reflection
+     * @param $propertyName
+     *
+     * @return ReflectionProperty
+     */
+    protected function getProperty(\ReflectionClass $reflection, $propertyName): ReflectionProperty
+    {
+        $property = $reflection->getProperty($propertyName);
+        $property->setAccessible(true);
+        return $property;
     }
 }

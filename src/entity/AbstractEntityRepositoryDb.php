@@ -70,9 +70,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
         $result = null;
         $select = $this->selectQuery($condition);
         if ($row = $select->execute()->fetch()) {
-            $this->unserializeFields($row);
-            /** @var AbstractEntity $result */
-            $result = $this->factory->createFromData($row);
+            $result = $this->rowToEntity($row);
         }
 
         return $result;
@@ -88,9 +86,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
         $select = $this->selectQuery($condition);
         if ($rows = $select->execute()->fetchAll(\PDO::FETCH_ASSOC)) {
             foreach ($rows as $row) {
-                $this->unserializeFields($row);
-                /** @var AbstractEntity $entity */
-                $entity = $this->factory->createFromData($row);
+                $entity = $this->rowToEntity($row);
                 $result[$entity->getId()] = $entity;
             }
         }
@@ -153,6 +149,19 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      */
     protected function beforeDataSave(&$data)
     {
+    }
+
+    /**
+     * @param $data
+     *
+     * @return AbstractEntity
+     */
+    private function rowToEntity($data)
+    {
+        $this->unserializeFields($data);
+        $entity = $this->factory->createFromData($data);
+        /** @var AbstractEntity $entity */
+        return $entity;
     }
 
     /**
