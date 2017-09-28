@@ -24,6 +24,8 @@
         <fileset dir="${stats_dir}" id="reportFiles">
             <include name="**/**" />
             <exclude name="*.zip"/>
+            <exclude name="phpmd.xml"/>
+            <exclude name="phpcpd.xml"/>
         </fileset>
 
         <zip destfile="${stats_dir}/report.zip">
