@@ -30,7 +30,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6",
-        "mvkasatkin/mocker": "^1"
+        "mvkasatkin/mocker": "^1",
+        "edgedesign/phpqa" : "~1.14"
     },
     "autoload": {
         "psr-4": {

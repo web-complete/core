@@ -1,74 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="wcp_core" basedir="." default="statistic">
-    <property name="statisticDir" value="${project.basedir}/build" />
-    <property name="srcDir" value="${project.basedir}/src" />
+    <property name="stats_dir" value="${project.basedir}/build" />
+    <property name="src_dir" value="${project.basedir}/src" />
 
-    <target name="statistic" depends="prepare,phpmd,phpcpd,phploc,phpcs,pdepend"/>
+    <target name="statistic" depends="prepare,ci-phpqa,tc-reports"/>
 
     <target name="prepare">
-        <mkdir dir="${statisticDir}" />
+        <mkdir dir="${stats_dir}" />
     </target>
 
-    <target name="phpmd" description="PHP Mess Detector" depends="prepare">
-        <property name="pmd" value="${statisticDir}/phpmd.xml" />
-        <exec dir="${srcDir}" executable="phpmd">
-            <arg line="${srcDir}" />
-            <arg line="xml" />
-            <arg line="cleancode,codesize,controversial,design,naming,unusedcode" />
-            <arg line="--reportfile ${pmd}" />
+    <target name="ci-phpqa">
+        <exec executable="${project.basedir}/vendor/bin/phpqa" passthru="true">
+            <arg value="--analyzedDirs=${src_dir}" />
+            <arg value="--buildDir=${stats_dir}" />
+            <arg value="--report" />
         </exec>
-        <echo message="##teamcity[importData type='pmd' path='${pmd}']"/>
     </target>
 
-    <target name="phpcs" description="PHP_CodeSniffer">
-        <exec dir="${srcDir}" executable="phpcs" output="${statisticDir}/phpcs.txt">
-            <arg line="--tab-width=4" />
-            <arg line="--report=full" />
-            <arg line="--standard=PSR2" />
-            <arg line="--report-file=${statisticDir}/phpcs.xml" />
-            <arg line="${srcDir}" />
-        </exec>
+    <target name="tc-reports" depends="ci-phpqa">
+        <echo message="##teamcity[importData type='pmd' path='${stats_dir}/phpmd.xml']"/>
+        <echo message="##teamcity[importData type='pmdCpd' path='${stats_dir}/phpcpd.xml']"/>
 
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/phpcs.xml']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/phpcs.txt']" />
-    </target>
+        <fileset dir="${stats_dir}" id="reportFiles">
+            <include name="**/**" />
+            <exclude name="*.zip"/>
+        </fileset>
 
-    <target name="phploc" description="Tool for quickly measuring the size of a PHP project">
-        <exec dir="${srcDir}" executable="phploc" output="${statisticDir}/phploc.txt">
-            <arg line="--count-tests" />
-            <arg line="--log-xml ${statisticDir}/phploc.xml" />
-            <arg line="${srcDir}" />
-        </exec>
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/phploc.xml']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/phploc.txt']" />
-    </target>
+        <zip destfile="${stats_dir}/report.zip">
+            <fileset refid="reportFiles" />
+        </zip>
 
-    <target name="pdepend" description="PHP_Depend">
-        <exec dir="${srcDir}" executable="pdepend">
-            <arg line="--jdepend-chart=${statisticDir}/pdepend.jdepend.chart.svg" />
-            <arg line="--jdepend-xml=${statisticDir}/pdepend.jdepend.xml"/>
-            <arg line="--overview-pyramid=${statisticDir}/pdepend.overview.pyramid.svg"/>
-            <arg line="--summary-xml=${statisticDir}/pdepend.summary.xml"/>
-            <arg line="--coderank-mode=inheritance,property,method"/>
-            <arg line="${srcDir}"/>
-        </exec>
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/pdepend.jdepend.chart.svg']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/pdepend.jdepend.xml']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/pdepend.overview.pyramid.svg']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/pdepend.phpunit.xml']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/pdepend.summary.xml']" />
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/phpunit.clover.xml']" />
-    </target>
-
-    <target name="phpcpd" description="Copy/Paste Detector">
-        <property name="phpcpd" value="${statisticDir}/phpcpd.xml" />
-        <exec dir="${srcDir}" executable="phpcpd" output="${statisticDir}/phpcpd.txt">
-            <arg line="--log-pmd ${phpcpd}" />
-            <arg line="${srcDir}" />
-        </exec>
-
-        <echo message="##teamcity[importData type='pmd' path='${phpcpd}']"/>
-        <echo message="##teamcity[publishArtifacts '${statisticDir}/phpcpd.txt']" />
-        <echo message="##teamcity[publishArtifacts '${phpcpd}']" />
+        <delete dir="${stats_dir}/phpmetrics">
+            <fileset refid="reportFiles"/>
+        </delete>
     </target>
 </project>
