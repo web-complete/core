@@ -33,6 +33,15 @@ class ContainerAdapter implements ContainerInterface
     }
 
     /**
+     * @param $id
+     * @param $value
+     */
+    public function set($id, $value)
+    {
+        $this->container->set($id, $value);
+    }
+
+    /**
      * @param string $id
      * @return mixed
      * @throws ContainerException

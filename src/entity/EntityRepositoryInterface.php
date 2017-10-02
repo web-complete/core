@@ -34,7 +34,7 @@ interface EntityRepositoryInterface
      * @param Condition $condition
      * @return AbstractEntity[]
      */
-    public function findAll(Condition $condition): array;
+    public function findAll(Condition $condition = null): array;
 
     /**
      * @param Condition $condition

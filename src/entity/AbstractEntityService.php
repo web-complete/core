@@ -64,7 +64,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      * @param Condition $condition
      * @return AbstractEntity[]
      */
-    public function findAll(Condition $condition): array
+    public function findAll(Condition $condition = null): array
     {
         return $this->repository->findAll($condition);
     }

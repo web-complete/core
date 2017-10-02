@@ -6,6 +6,12 @@ interface ContainerInterface extends \Psr\Container\ContainerInterface
 {
 
     /**
+     * @param $id
+     * @param $value
+     */
+    public function set($id, $value);
+
+    /**
      * Make a new instance of definition
      *
      * @param $name

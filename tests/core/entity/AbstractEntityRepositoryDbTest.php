@@ -1,13 +1,15 @@
 <?php
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Mvkasatkin\mocker\Mocker;
 use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntityRepositoryDb;
 use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\Hydrator;
 
-class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
+class AbstractEntityRepositoryDbTest extends CoreTestCase
 {
 
     public function testTransaction()
@@ -138,6 +140,17 @@ class AbstractEntityRepositoryDbTest extends \PHPUnit\Framework\TestCase
         $conn->expects($this->once())->method('delete')->with('tbl', ['id' => 44]);
         $rep = $this->createRep(null, null, null, $conn);
         $rep->delete($o1->getId());
+    }
+
+    public function testDeleteAll()
+    {
+        /** @var AbstractEntityRepositoryDb $aer */
+        $aer = Mocker::create(AbstractEntityRepositoryDb::class);
+        $db = Mocker::create(Connection::class, [
+            Mocker::method('delete', 1, [null, []])
+        ]);
+        Mocker::setProperty($aer, 'db', $db);
+        $aer->deleteAll();
     }
 
     public function testSelectQuery()

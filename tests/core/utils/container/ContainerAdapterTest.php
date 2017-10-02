@@ -1,6 +1,9 @@
 <?php
 
-class ContainerAdapterTest extends \PHPUnit\Framework\TestCase
+use Mvkasatkin\mocker\Mocker;
+use WebComplete\core\utils\container\ContainerInterface;
+
+class ContainerAdapterTest extends CoreTestCase
 {
 
     public function testHas()
@@ -41,6 +44,16 @@ class ContainerAdapterTest extends \PHPUnit\Framework\TestCase
         $dic->expects($this->once())->method('get')->with('a')->willReturn('b');
         $container->setContainer($dic);
         $this->assertEquals('b', $container->get('a'));
+    }
+
+    public function testSet()
+    {
+        $container = Mocker::create(ContainerInterface::class, [
+            Mocker::method('set', 1, ['aaa', 'bbb'])
+        ]);
+        $containerAdapter = new \WebComplete\core\utils\container\ContainerAdapter();
+        $containerAdapter->setContainer($container);
+        $containerAdapter->set('aaa', 'bbb');
     }
 
     public function testMake()

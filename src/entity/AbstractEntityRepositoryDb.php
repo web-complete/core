@@ -80,7 +80,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      * @param Condition $condition
      * @return AbstractEntity[]
      */
-    public function findAll(Condition $condition): array
+    public function findAll(Condition $condition = null): array
     {
         $result = [];
         $select = $this->selectQuery($condition);
@@ -129,6 +129,15 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     public function delete($id)
     {
         $this->db->delete($this->table, ['id' => $id]);
+    }
+
+    /**
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
+    public function deleteAll()
+    {
+        $this->db->delete($this->table, []);
     }
 
     /**
