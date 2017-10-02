@@ -71,10 +71,10 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
 
     /**
      * Proxy method
-     * @param Condition $condition
+     * @param Condition|null $condition
      * @return int
      */
-    public function count(Condition $condition): int
+    public function count(Condition $condition = null): int
     {
         return $this->repository->count($condition);
     }

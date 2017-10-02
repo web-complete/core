@@ -95,10 +95,10 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     }
 
     /**
-     * @param Condition $condition
+     * @param Condition|null $condition
      * @return int
      */
-    public function count(Condition $condition): int
+    public function count(Condition $condition = null): int
     {
         $select = $this->selectQuery($condition);
         return $select->select(['t1.id'])->execute()->rowCount();

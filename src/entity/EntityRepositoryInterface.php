@@ -37,10 +37,10 @@ interface EntityRepositoryInterface
     public function findAll(Condition $condition = null): array;
 
     /**
-     * @param Condition $condition
+     * @param Condition|null $condition
      * @return int
      */
-    public function count(Condition $condition): int;
+    public function count(Condition $condition = null): int;
 
     /**
      * @param AbstractEntity $item
