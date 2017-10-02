@@ -48,12 +48,14 @@ class ObjectFactory extends AbstractFactory
 
     /**
      * @param array $data
+     * @param array|null $map
+     *
      * @return object
      */
-    public function createFromData(array $data)
+    public function createFromData(array $data, array $map = null)
     {
         $object = $this->create();
-        $this->hydrator->hydrate($data, $object);
+        $this->hydrator->hydrate($data, $object, $map);
         return $object;
     }
 }

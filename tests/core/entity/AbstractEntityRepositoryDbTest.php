@@ -54,10 +54,11 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
         $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null])->willReturn(2);
+        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null], ['a' => 'b'])->willReturn(2);
 
         $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
+        Mocker::setProperty($rep, 'map', ['a' => 'b']);
         $this->assertEquals(2, $rep->findOne(new Condition()));
     }
 

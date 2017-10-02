@@ -15,6 +15,11 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     const SERIALIZE_STRATEGY_PHP  = 2;
 
     protected $table;
+    /**
+     * map: fieldName: propertyName
+     * @var array|null
+     */
+    protected $map;
     protected $serializeFields = [];
     protected $serializeStrategy = self::SERIALIZE_STRATEGY_JSON;
 
@@ -109,7 +114,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      */
     public function save(AbstractEntity $item)
     {
-        $data = $this->hydrator->extract($item);
+        $data = $this->hydrator->extract($item, $this->map);
         $this->beforeDataSave($data);
         $this->serializeFields($data);
         if ($id = $item->getId()) {
@@ -169,7 +174,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     private function rowToEntity($data)
     {
         $this->unserializeFields($data);
-        $entity = $this->factory->createFromData($data);
+        $entity = $this->factory->createFromData($data, $this->map);
         /** @var AbstractEntity $entity */
         return $entity;
     }
