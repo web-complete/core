@@ -30,7 +30,7 @@ class Hydrator implements HydratorInterface
             $object = $reflection->newInstanceWithoutConstructor();
         }
 
-        if (!\is_array($map)) {
+        if (!\is_array($map) || !$map) {
             $map = \array_keys($data);
             $map = \array_combine($map, $map);
         }
@@ -60,7 +60,7 @@ class Hydrator implements HydratorInterface
         $className = \get_class($object);
         $reflection = $this->getReflection($className);
 
-        if (!\is_array($map)) {
+        if (!\is_array($map) || !$map) {
             $propertyList = $this->getReflectionPropertyList($className);
             $map = \array_combine($propertyList, $propertyList);
         }
