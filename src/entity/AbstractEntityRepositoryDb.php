@@ -101,7 +101,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     public function count(Condition $condition): int
     {
         $select = $this->selectQuery($condition);
-        return $select->select(['id'])->execute()->rowCount();
+        return $select->select(['t1.id'])->execute()->rowCount();
     }
 
     /**
@@ -113,7 +113,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
         $this->beforeDataSave($data);
         $this->serializeFields($data);
         if ($id = $item->getId()) {
-            $this->db->update($this->table, $data, ['id' => $id]);
+            $this->db->update($this->table, $data, ['t1.id' => $id]);
         } else {
             unset($data['id']);
             $this->db->insert($this->table, $data);
@@ -128,16 +128,17 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      */
     public function delete($id)
     {
-        $this->db->delete($this->table, ['id' => $id]);
+        $this->db->delete($this->table, ['t1.id' => $id]);
     }
 
     /**
-     *
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @param Condition|null $condition
      */
-    public function deleteAll()
+    public function deleteAll(Condition $condition = null)
     {
-        $this->db->delete($this->table, []);
+        $query = $this->selectQuery($condition);
+        $query->delete($this->table, 't1');
+        $query->execute();
     }
 
     /**

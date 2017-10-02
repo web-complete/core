@@ -51,4 +51,9 @@ interface EntityRepositoryInterface
      * @param $id
      */
     public function delete($id);
+
+    /**
+     * @param Condition|null $condition
+     */
+    public function deleteAll(Condition $condition = null);
 }

@@ -126,7 +126,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $o1->a = 2;
         $o1->arr = [1,2,3];
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
-        $conn->expects($this->once())->method('update')->with('tbl', ['id' => 33, 'a' => 2, 'arr' => '[1,2,3]', 'arr2' => null], ['id' => 33]);
+        $conn->expects($this->once())->method('update')->with('tbl', ['id' => 33, 'a' => 2, 'arr' => '[1,2,3]', 'arr2' => null], ['t1.id' => 33]);
         $rep = $this->createRep(null, null, null, $conn);
         $rep->save($o1);
         $this->assertEquals(33, $o1->getId());
@@ -137,19 +137,21 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $o1 = new AbstractEntityRepositoryDbTestEntity();
         $o1->setId(44);
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
-        $conn->expects($this->once())->method('delete')->with('tbl', ['id' => 44]);
+        $conn->expects($this->once())->method('delete')->with('tbl', ['t1.id' => 44]);
         $rep = $this->createRep(null, null, null, $conn);
         $rep->delete($o1->getId());
     }
 
     public function testDeleteAll()
     {
-        /** @var AbstractEntityRepositoryDb $aer */
-        $aer = Mocker::create(AbstractEntityRepositoryDb::class);
-        $db = Mocker::create(Connection::class, [
-            Mocker::method('delete', 1, [null, []])
+        $query = Mocker::create(\Doctrine\DBAL\Query\QueryBuilder::class, [
+            Mocker::method('delete', 1, [null, 't1']),
+            Mocker::method('execute', 1),
         ]);
-        Mocker::setProperty($aer, 'db', $db);
+        /** @var AbstractEntityRepositoryDb $aer */
+        $aer = Mocker::create(AbstractEntityRepositoryDb::class, [
+            Mocker::method('selectQuery', 1, [null])->returns($query)
+        ]);
         $aer->deleteAll();
     }
 
