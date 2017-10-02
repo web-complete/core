@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="wcp_core" basedir="." default="statistic">
+    <property name="stats_dir" value="${project.basedir}/build" />
+    <property name="src_dir" value="${project.basedir}/src" />
+
+    <target name="statistic" depends="prepare,ci-phpqa,tc-reports"/>
+
+    <target name="prepare">
+        <mkdir dir="${stats_dir}" />
+    </target>
+
+    <target name="ci-phpqa">
+        <exec executable="${project.basedir}/vendor/bin/phpqa" passthru="true">
+            <arg value="--analyzedDirs=${src_dir}" />
+            <arg value="--buildDir=${stats_dir}" />
+            <arg value="--report" />
+        </exec>
+    </target>
+
+    <target name="tc-reports" depends="ci-phpqa">
+        <echo message="##teamcity[importData type='pmd' path='${stats_dir}/phpmd.xml']"/>
+        <echo message="##teamcity[importData type='pmdCpd' path='${stats_dir}/phpcpd.xml']"/>
+
+        <fileset dir="${stats_dir}" id="reportFiles">
+            <include name="**/**" />
+            <exclude name="*.zip"/>
+            <exclude name="phpmd.xml"/>
+            <exclude name="phpcpd.xml"/>
+        </fileset>
+
+        <zip destfile="${stats_dir}/report.zip">
+            <fileset refid="reportFiles" />
+        </zip>
+
+        <delete dir="${stats_dir}/phpmetrics">
+            <fileset refid="reportFiles"/>
+        </delete>
+    </target>
+</project>
