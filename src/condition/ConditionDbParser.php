@@ -7,19 +7,26 @@ use Doctrine\DBAL\Query\QueryBuilder;
 class ConditionDbParser
 {
 
+    /** @var array */
+    protected $map = [];
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param Condition|null $condition
+     * @param array|null $map
      */
-    public function parse(QueryBuilder $queryBuilder, Condition $condition = null)
+    public function parse(QueryBuilder $queryBuilder, Condition $condition = null, array $map = null)
     {
         if ($condition === null) {
             return;
         }
+        if ($map) {
+            $this->map = \array_flip($map);
+        }
         $this->parseConditions($queryBuilder, $condition);
 
         foreach ($condition->getSort() as $field => $direction) {
-            $queryBuilder->orderBy($field, $direction === \SORT_DESC ? 'desc' : 'asc');
+            $queryBuilder->orderBy($this->mapField($field), $direction === \SORT_DESC ? 'desc' : 'asc');
         }
 
         if ($offset = (int)$condition->getOffset()) {
@@ -85,7 +92,8 @@ class ConditionDbParser
         $value = $cond[2] ? '%' : '';
         $value .= $cond[1];
         $value .= $cond[3] ? '%' : '';
-        $queryBuilder->andWhere("{$cond[0]} LIKE " . $queryBuilder->createNamedParameter($value));
+        $field = $this->mapField($cond[0]);
+        $queryBuilder->andWhere("{$field} LIKE " . $queryBuilder->createNamedParameter($value));
     }
 
     /**
@@ -102,7 +110,8 @@ class ConditionDbParser
             foreach ($values as $v) {
                 $sql .= ($isNumeric ? (float)$v : $queryBuilder->createNamedParameter($v)) . ',';
             }
-            $queryBuilder->andWhere("{$cond[0]} IN (" . \rtrim($sql, ',') . ')');
+            $field = $this->mapField($cond[0]);
+            $queryBuilder->andWhere("{$field} IN (" . \rtrim($sql, ',') . ')');
         } else {
             $queryBuilder->andWhere('1 = 2'); // IN empty array is always false
         }
@@ -114,7 +123,8 @@ class ConditionDbParser
      */
     protected function parseBetweenCondition(QueryBuilder $queryBuilder, $cond)
     {
-        $queryBuilder->andWhere("{$cond[0]} BETWEEN " . $queryBuilder->createNamedParameter($cond[1])
+        $field = $this->mapField($cond[0]);
+        $queryBuilder->andWhere("{$field} BETWEEN " . $queryBuilder->createNamedParameter($cond[1])
             . ' AND ' . $queryBuilder->createNamedParameter($cond[2]));
     }
 
@@ -125,6 +135,17 @@ class ConditionDbParser
      */
     protected function parseSimpleCondition(string $exp, QueryBuilder $queryBuilder, $cond)
     {
-        $queryBuilder->andWhere("{$cond[0]} $exp " . $queryBuilder->createNamedParameter($cond[1]));
+        $field = $this->mapField($cond[0]);
+        $queryBuilder->andWhere("{$field} $exp " . $queryBuilder->createNamedParameter($cond[1]));
+    }
+
+    /**
+     * @param $field
+     *
+     * @return mixed
+     */
+    protected function mapField($field)
+    {
+        return $this->map[$field] ?? $field;
     }
 }

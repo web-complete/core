@@ -38,9 +38,12 @@ class ConditionDbParserTest extends \PHPUnit\Framework\TestCase
         $conn = \Doctrine\DBAL\DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
         $qb = new \Doctrine\DBAL\Query\QueryBuilder($conn);
         $qb->select('*')->from('tmp');
-        $parser->parse($qb, $condition);
+        $parser->parse($qb, $condition, [
+            'A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd', 'E' => 'e', 'F' => 'f', 'G' => 'g', 'L' => 'l',
+            'H' => 'h', 'I' => 'i', 'J' => 'j', 'F1' => 'f1', 'F2' => 'f2'
+        ]);
 
-        $sql = 'SELECT * FROM tmp WHERE (a = :dcValue1) AND (b <> :dcValue2) AND (c < :dcValue3) AND (d > :dcValue4) AND (e <= :dcValue5) AND (f >= :dcValue6) AND (g BETWEEN :dcValue7 AND :dcValue8) AND (l LIKE :dcValue9) AND (h IN (:dcValue10,:dcValue11)) AND (i IN (9,10)) AND (1 = 2) ORDER BY f2 desc LIMIT 15 OFFSET 5';
+        $sql = 'SELECT * FROM tmp WHERE (A = :dcValue1) AND (B <> :dcValue2) AND (C < :dcValue3) AND (D > :dcValue4) AND (E <= :dcValue5) AND (F >= :dcValue6) AND (G BETWEEN :dcValue7 AND :dcValue8) AND (L LIKE :dcValue9) AND (H IN (:dcValue10,:dcValue11)) AND (I IN (9,10)) AND (1 = 2) ORDER BY F2 desc LIMIT 15 OFFSET 5';
         $this->assertEquals($sql, $qb->getSQL());
         $this->assertEquals([
             'dcValue1' => 1,

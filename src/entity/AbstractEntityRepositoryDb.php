@@ -154,7 +154,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     {
         $queryBuilder = $this->db->createQueryBuilder();
         $queryBuilder->select(['t1.*'])->from($this->table, 't1');
-        $this->conditionParser->parse($queryBuilder, $condition);
+        $this->conditionParser->parse($queryBuilder, $condition, $this->map);
         return $queryBuilder;
     }
 
