@@ -147,6 +147,29 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     }
 
     /**
+     * @param string $field
+     * @param string $key
+     * @param Condition|null $condition
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getMap(string $field, string $key = 'id', Condition $condition = null): array
+    {
+        $result = [];
+        $select = $this->selectQuery($condition);
+        $select->select(['t1.' . $field, 't1.' . $key]);
+        if ($rows = $select->execute()->fetchAll(\PDO::FETCH_ASSOC)) {
+            foreach ($rows as $row) {
+                $this->unserializeFields($row);
+                $result[$row[$key]] = $row[$field];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param Condition|null $condition
      * @return QueryBuilder
      */

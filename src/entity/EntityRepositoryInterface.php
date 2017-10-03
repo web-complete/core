@@ -56,4 +56,14 @@ interface EntityRepositoryInterface
      * @param Condition|null $condition
      */
     public function deleteAll(Condition $condition = null);
+
+    /**
+     * @param string $field
+     * @param string $key
+     * @param Condition|null $condition
+     *
+     * @return array
+     * @throws \TypeError
+     */
+    public function getMap(string $field, string $key = 'id', Condition $condition = null): array;
 }

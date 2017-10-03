@@ -156,6 +156,27 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $aer->deleteAll();
     }
 
+    public function testGetMap()
+    {
+        $query = Mocker::create(\Doctrine\DBAL\Query\QueryBuilder::class, [
+            Mocker::method('select', 1, [['t1.some', 't1.id']]),
+            Mocker::method('execute', 1)->returnsSelf(),
+            Mocker::method('fetchAll', 1)->returns([
+                ['id' => 11, 'some' => 'aaa'],
+                ['id' => 12, 'some' => 'bbb'],
+            ]),
+        ]);
+        /** @var AbstractEntityRepositoryDb $aer */
+        $aer = Mocker::create(AbstractEntityRepositoryDb::class, [
+            Mocker::method('selectQuery', 1, [null])->returns($query)
+        ]);
+        $map = $aer->getMap('some');
+        $this->assertEquals([
+            11 => 'aaa',
+            12 => 'bbb'
+        ], $map);
+    }
+
     public function testSelectQuery()
     {
         $rep = $this->createRep();
