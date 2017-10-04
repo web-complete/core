@@ -21,6 +21,11 @@ class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
         $this->createAService(['create'])->create();
     }
 
+    public function testProxyCreateFromData()
+    {
+        $this->createAService(['createFromData'])->createFromData([], []);
+    }
+
     public function testProxyFindById()
     {
         $this->createAService(['findById'])->findById(1);

@@ -1,10 +1,10 @@
 <?php
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Mvkasatkin\mocker\Mocker;
 use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
+use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityRepositoryDb;
 use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\Hydrator;
@@ -33,12 +33,13 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
+        $entity = Mocker::create(AbstractEntity::class);
         $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->willReturn(2);
+        $of->method('createFromData')->willReturn($entity);
 
         $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
-        $this->assertEquals(2, $rep->findById(1));
+        $this->assertEquals($entity, $rep->findById(1));
     }
 
     public function testFindOne()
@@ -53,13 +54,14 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
+        $entity = Mocker::create(AbstractEntity::class);
         $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null], ['a' => 'b'])->willReturn(2);
+        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null], ['a' => 'b'])->willReturn($entity);
 
         $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
         Mocker::setProperty($rep, 'map', ['a' => 'b']);
-        $this->assertEquals(2, $rep->findOne(new Condition()));
+        $this->assertEquals($entity, $rep->findOne(new Condition()));
     }
 
     public function testFindAll()
@@ -223,7 +225,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
 }
 
-class AbstractEntityRepositoryDbTestEntity extends \WebComplete\core\entity\AbstractEntity {
+class AbstractEntityRepositoryDbTestEntity extends AbstractEntity {
     public $a;
     public $arr;
     public $arr2;

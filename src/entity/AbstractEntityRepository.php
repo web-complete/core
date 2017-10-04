@@ -39,6 +39,19 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
+     * @param array $data
+     * @param array|null $map
+     *
+     * @return AbstractEntity
+     */
+    public function createFromData(array $data, array $map = null): AbstractEntity
+    {
+        $result = $this->factory->createFromData($data, $map);
+        /** @var AbstractEntity $result */
+        return $result;
+    }
+
+    /**
      * Adjust data before save
      * @param $data
      */

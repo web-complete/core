@@ -41,6 +41,19 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
 
     /**
      * Proxy method
+     *
+     * @param array $data
+     * @param array|null $map
+     *
+     * @return AbstractEntity
+     */
+    public function createFromData(array $data, array $map = null): AbstractEntity
+    {
+        return $this->repository->createFromData($data, $map);
+    }
+
+    /**
+     * Proxy method
      * @param $id
      * @return AbstractEntity|null
      */

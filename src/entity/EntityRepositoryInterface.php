@@ -19,6 +19,14 @@ interface EntityRepositoryInterface
     public function create(): AbstractEntity;
 
     /**
+     * @param array $data
+     * @param array|null $map
+     *
+     * @return AbstractEntity
+     */
+    public function createFromData(array $data, array $map = null): AbstractEntity;
+
+    /**
      * @param $id
      * @return AbstractEntity|null
      */

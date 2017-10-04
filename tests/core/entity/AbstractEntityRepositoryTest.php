@@ -19,4 +19,17 @@ class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
         $aer->create();
     }
 
+    public function testCreateFromData()
+    {
+        $data = [1,2,3];
+        $map = ['a' => 'b'];
+
+        $of = $this->createMock(ObjectFactory::class);
+        $of->expects($this->once())->method('createFromData')->with($data, $map)
+            ->willReturn($this->createMock(AbstractEntity::class));
+        $hydrator = new Hydrator();
+        $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of, $hydrator]);
+        /** @var AbstractEntityRepository $aer */
+        $aer->createFromData($data, $map);
+    }
 }
