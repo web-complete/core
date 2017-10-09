@@ -91,7 +91,7 @@ class PackageManager
      */
     public function findAll($directory): array
     {
-        $key = __CLASS__ . ':' . __METHOD__ . ':' . $directory;
+        $key = \str_replace(['::', '\\'], '.', __METHOD__) . '.' . \crc32($directory);
         $result = $this->cache->get($key);
         if (!$result) {
             $result = $this->classHelper->getClassMap($directory, self::FILENAME);
