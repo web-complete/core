@@ -2,6 +2,7 @@
 
 namespace WebComplete\core\package;
 
+use Psr\SimpleCache\CacheInterface;
 use WebComplete\core\utils\helpers\ClassHelper;
 
 class PackageManager
@@ -13,7 +14,10 @@ class PackageManager
      * @var ClassHelper
      */
     protected $classHelper;
-
+    /**
+     * @var CacheInterface
+     */
+    protected $cache;
     /**
      * @var array
      */
@@ -21,10 +25,12 @@ class PackageManager
 
     /**
      * @param ClassHelper $classHelper
+     * @param CacheInterface $cache
      */
-    public function __construct(ClassHelper $classHelper)
+    public function __construct(ClassHelper $classHelper, CacheInterface $cache)
     {
         $this->classHelper = $classHelper;
+        $this->cache = $cache;
     }
 
     /**
@@ -79,11 +85,18 @@ class PackageManager
      * @param $directory
      *
      * @return array [file => class]
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \Exception
      * @throws \InvalidArgumentException
      */
     public function findAll($directory): array
     {
-        return $this->classHelper->getClassMap($directory, self::FILENAME);
+        $key = __CLASS__ . ':' . __METHOD__ . ':' . $directory;
+        $result = $this->cache->get($key);
+        if (!$result) {
+            $result = $this->classHelper->getClassMap($directory, self::FILENAME);
+            $this->cache->set($key, $result);
+        }
+        return $result;
     }
 }

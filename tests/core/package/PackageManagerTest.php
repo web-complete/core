@@ -3,6 +3,7 @@
 namespace WebComplete\core\package;
 
 use Mvkasatkin\mocker\Mocker;
+use Symfony\Component\Cache\Simple\NullCache;
 use WebComplete\core\utils\helpers\ClassHelper;
 
 class PackageManagerTest extends \CoreTestCase
@@ -11,7 +12,7 @@ class PackageManagerTest extends \CoreTestCase
     public function testInstance()
     {
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper);
+        $pm = new PackageManager($classHelper, new NullCache());
         $this->assertInstanceOf(PackageManager::class, $pm);
     }
 
@@ -19,7 +20,7 @@ class PackageManagerTest extends \CoreTestCase
     {
         $p = Mocker::create(AbstractPackage::class);
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper);
+        $pm = new PackageManager($classHelper, new NullCache());
         $def = [];
         $pm->register(get_class($p), $def);
         $this->assertInstanceOf(get_class($p), $pm->getPackage(get_class($p)));
@@ -29,7 +30,7 @@ class PackageManagerTest extends \CoreTestCase
     {
         $this->expectException(PackageException::class);
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper);
+        $pm = new PackageManager($classHelper, new NullCache());
         $pm->getPackage('asd');
     }
 
@@ -38,7 +39,7 @@ class PackageManagerTest extends \CoreTestCase
         $this->expectException(PackageException::class);
         $p = Mocker::create(\stdClass::class);
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper);
+        $pm = new PackageManager($classHelper, new NullCache());
         $def = [];
         $pm->register(get_class($p), $def);
     }
@@ -56,7 +57,7 @@ class PackageManagerTest extends \CoreTestCase
         /** @var PackageManager $pm */
         $pm = Mocker::create(PackageManager::class, [
             Mocker::method('register', 1, ['SomeClass', $def])
-        ], [$classHelper]);
+        ], [$classHelper, new NullCache()]);
         $pm->registerAll($dir, $def);
     }
 
@@ -67,7 +68,7 @@ class PackageManagerTest extends \CoreTestCase
         $classHelper = Mocker::create(ClassHelper::class, [
             Mocker::method('getClassMap', 1, [$dir, PackageManager::FILENAME])->returns([])
         ]);
-        $pm = new PackageManager($classHelper);
+        $pm = new PackageManager($classHelper, new NullCache());
         $pm->findAll($dir);
     }
 }
