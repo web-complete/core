@@ -9,7 +9,7 @@ class AbstractEntity
     protected $id;
 
     /**
-     * @return int|null
+     * @return int|string|null
      */
     public function getId()
     {
@@ -17,7 +17,7 @@ class AbstractEntity
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      */
     public function setId($id)
     {
