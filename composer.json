@@ -1,7 +1,7 @@
 {
     "name": "web-complete/core",
     "description": "WebComplete architecture core for DDD",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "keywords": [
         "entity",
         "service",
