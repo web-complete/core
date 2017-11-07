@@ -109,4 +109,26 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     {
         return $this->repository->delete($id);
     }
+
+    /**
+     * @param Condition|null $condition
+     *
+     * @return mixed
+     */
+    public function deleteAll(Condition $condition = null)
+    {
+        return $this->repository->deleteAll($condition);
+    }
+
+    /**
+     * @param string $field
+     * @param string $key
+     * @param Condition|null $condition
+     *
+     * @return array
+     */
+    public function getMap(string $field, string $key = 'id', Condition $condition = null): array
+    {
+        return $this->repository->getMap($field, $key, $condition);
+    }
 }
