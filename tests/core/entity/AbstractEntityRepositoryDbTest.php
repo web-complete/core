@@ -191,6 +191,12 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $this->assertEquals('SELECT t1.* FROM tbl t1 WHERE a = :dcValue1', $sql);
     }
 
+    public function testGetTable()
+    {
+        $aer = $this->createRep();
+        $this->assertEquals('tbl', $aer->getTable());
+    }
+
     /**
      * @param null $of
      * @param null $h

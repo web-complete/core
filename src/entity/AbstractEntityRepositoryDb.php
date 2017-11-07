@@ -49,6 +49,14 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     }
 
     /**
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    /**
      * @param \Closure $closure
      * @throws \Exception
      */
