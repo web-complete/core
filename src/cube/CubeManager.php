@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace WebComplete\core\package;
+namespace WebComplete\core\cube;
 
 use Psr\SimpleCache\CacheInterface;
 use WebComplete\core\utils\helpers\ClassHelper;
 
-class PackageManager
+class CubeManager
 {
 
-    const FILENAME = 'Package.php';
+    const FILENAME = 'Cube.php';
 
     /**
      * @var ClassHelper
@@ -34,36 +34,36 @@ class PackageManager
     }
 
     /**
-     * @param $packageClassName
+     * @param $cubeClassName
      *
-     * @return AbstractPackage
-     * @throws PackageException
+     * @return AbstractCube
+     * @throws CubeException
      */
-    public function getPackage($packageClassName): AbstractPackage
+    public function getCube($cubeClassName): AbstractCube
     {
-        if (!isset($this->registered[$packageClassName])) {
-            throw new PackageException($packageClassName . ' is not registered');
+        if (!isset($this->registered[$cubeClassName])) {
+            throw new CubeException($cubeClassName . ' is not registered');
         }
 
-        return $this->registered[$packageClassName];
+        return $this->registered[$cubeClassName];
     }
 
     /**
-     * @param $packageClassName
+     * @param $cubeClassName
      * @param array $definitions
      *
-     * @throws PackageException
+     * @throws CubeException
      */
-    public function register($packageClassName, array &$definitions)
+    public function register($cubeClassName, array &$definitions)
     {
-        if (!isset($this->registered[$packageClassName])) {
-            $package = new $packageClassName;
-            if (!$package instanceof AbstractPackage) {
-                throw new PackageException($packageClassName . ' is not an instance of ' . AbstractPackage::class);
+        if (!isset($this->registered[$cubeClassName])) {
+            $cube = new $cubeClassName;
+            if (!$cube instanceof AbstractCube) {
+                throw new CubeException($cubeClassName . ' is not an instance of ' . AbstractCube::class);
             }
 
-            $package->registerDependencies($definitions);
-            $this->registered[$packageClassName] = $package;
+            $cube->registerDependencies($definitions);
+            $this->registered[$cubeClassName] = $cube;
         }
     }
 

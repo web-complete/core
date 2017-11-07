@@ -1,8 +1,8 @@
 <?php
 
-namespace WebComplete\core\package;
+namespace WebComplete\core\cube;
 
-abstract class AbstractPackage
+abstract class AbstractCube
 {
 
     /**

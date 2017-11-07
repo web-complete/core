@@ -1,45 +1,45 @@
 <?php
 
-namespace WebComplete\core\package;
+namespace WebComplete\core\cube;
 
 use Mvkasatkin\mocker\Mocker;
 use Symfony\Component\Cache\Simple\NullCache;
 use WebComplete\core\utils\helpers\ClassHelper;
 
-class PackageManagerTest extends \CoreTestCase
+class CubeManagerTest extends \CoreTestCase
 {
 
     public function testInstance()
     {
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper, new NullCache());
-        $this->assertInstanceOf(PackageManager::class, $pm);
+        $pm = new CubeManager($classHelper, new NullCache());
+        $this->assertInstanceOf(CubeManager::class, $pm);
     }
 
     public function testGetPackage()
     {
-        $p = Mocker::create(AbstractPackage::class);
+        $p = Mocker::create(AbstractCube::class);
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper, new NullCache());
+        $pm = new CubeManager($classHelper, new NullCache());
         $def = [];
         $pm->register(get_class($p), $def);
-        $this->assertInstanceOf(get_class($p), $pm->getPackage(get_class($p)));
+        $this->assertInstanceOf(get_class($p), $pm->getCube(get_class($p)));
     }
 
     public function testGetPackageException()
     {
-        $this->expectException(PackageException::class);
+        $this->expectException(CubeException::class);
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper, new NullCache());
-        $pm->getPackage('asd');
+        $pm = new CubeManager($classHelper, new NullCache());
+        $pm->getCube('asd');
     }
 
     public function testRegisterException()
     {
-        $this->expectException(PackageException::class);
+        $this->expectException(CubeException::class);
         $p = Mocker::create(\stdClass::class);
         $classHelper = new ClassHelper();
-        $pm = new PackageManager($classHelper, new NullCache());
+        $pm = new CubeManager($classHelper, new NullCache());
         $def = [];
         $pm->register(get_class($p), $def);
     }
@@ -50,12 +50,12 @@ class PackageManagerTest extends \CoreTestCase
         $def = [];
         /** @var ClassHelper $classHelper */
         $classHelper = Mocker::create(ClassHelper::class, [
-            Mocker::method('getClassMap', 1, [$dir, PackageManager::FILENAME])->returns([
+            Mocker::method('getClassMap', 1, [$dir, CubeManager::FILENAME])->returns([
                 'SomeDir/SomeFile' => 'SomeClass'
             ])
         ]);
-        /** @var PackageManager $pm */
-        $pm = Mocker::create(PackageManager::class, [
+        /** @var CubeManager $pm */
+        $pm = Mocker::create(CubeManager::class, [
             Mocker::method('register', 1, ['SomeClass', $def])
         ], [$classHelper, new NullCache()]);
         $pm->registerAll($dir, $def);
@@ -66,9 +66,9 @@ class PackageManagerTest extends \CoreTestCase
         $dir = 'SomeDir';
         /** @var ClassHelper $classHelper */
         $classHelper = Mocker::create(ClassHelper::class, [
-            Mocker::method('getClassMap', 1, [$dir, PackageManager::FILENAME])->returns([])
+            Mocker::method('getClassMap', 1, [$dir, CubeManager::FILENAME])->returns([])
         ]);
-        $pm = new PackageManager($classHelper, new NullCache());
+        $pm = new CubeManager($classHelper, new NullCache());
         $pm->findAll($dir);
     }
 }
