@@ -76,7 +76,7 @@ class MigrationUpCommand extends Command
         $output->writeln($message . "\n");
 
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion('Continue? (Y/N): ', false);
+        $question = new ConfirmationQuestion('Continue? (Y/N): ', true);
         if ($class || $helper->ask($input, $output, $question)) {
             foreach ($newMigrations as $migrationClass) {
                 $output->writeln('Run: ' . $migrationClass);

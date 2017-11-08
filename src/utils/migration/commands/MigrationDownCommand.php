@@ -71,7 +71,7 @@ class MigrationDownCommand extends Command
         $output->writeln($message . "\n");
 
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion('Continue? (Y/N): ', false);
+        $question = new ConfirmationQuestion('Continue? (Y/N): ', true);
         if ($class || $helper->ask($input, $output, $question)) {
             foreach ($rollbackMigrations as $migrationClass) {
                 $output->writeln('Rollback: ' . $migrationClass);
