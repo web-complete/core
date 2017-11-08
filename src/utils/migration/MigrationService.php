@@ -70,4 +70,22 @@ class MigrationService
     {
         $this->registry->unregister($class);
     }
+
+    /**
+     * @return array
+     */
+    public function getRegistered(): array
+    {
+        return $this->registry->getRegistered();
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return bool
+     */
+    public function isRegistered(string $class): bool
+    {
+        return $this->registry->isRegistered($class);
+    }
 }

@@ -16,7 +16,7 @@ class CubeManagerTest extends \CoreTestCase
         $this->assertInstanceOf(CubeManager::class, $pm);
     }
 
-    public function testGetPackage()
+    public function testGetCube()
     {
         $p = Mocker::create(AbstractCube::class);
         $classHelper = new ClassHelper();
@@ -26,7 +26,19 @@ class CubeManagerTest extends \CoreTestCase
         $this->assertInstanceOf(get_class($p), $pm->getCube(get_class($p)));
     }
 
-    public function testGetPackageException()
+    public function testGetCubes()
+    {
+        $p = Mocker::create(AbstractCube::class);
+        $classHelper = new ClassHelper();
+        $pm = new CubeManager($classHelper, new NullCache());
+        $def = [];
+        $pm->register(get_class($p), $def);
+        $this->assertEquals([
+            get_class($p) => $p
+        ], $pm->getCubes());
+    }
+
+    public function testGetCubeException()
     {
         $this->expectException(CubeException::class);
         $classHelper = new ClassHelper();

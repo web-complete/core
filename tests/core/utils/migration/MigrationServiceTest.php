@@ -105,6 +105,26 @@ class MigrationServiceTest extends \CoreTestCase
         $migrationRegistry->register('testClass');
     }
 
+    public function testGetRegistered()
+    {
+        /** @var MigrationRegistryInterface $registry */
+        $registry = Mocker::create(MigrationRegistryInterface::class, [
+            Mocker::method('getRegistered', 1)->returns([]),
+        ]);
+        $service = new MigrationService($registry);
+        $this->assertEquals([], $service->getRegistered());
+    }
+
+    public function testIsRegistered()
+    {
+        /** @var MigrationRegistryInterface $registry */
+        $registry = Mocker::create(MigrationRegistryInterface::class, [
+            Mocker::method('isRegistered', 1, 'aaa')->returns(true),
+        ]);
+        $service = new MigrationService($registry);
+        $this->assertTrue($service->isRegistered('aaa'));
+    }
+
     /**
      * @return MigrationRegistryMysql
      */

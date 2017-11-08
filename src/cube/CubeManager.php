@@ -49,6 +49,14 @@ class CubeManager
     }
 
     /**
+     * @return AbstractCube[]
+     */
+    public function getCubes(): array
+    {
+        return $this->registered;
+    }
+
+    /**
      * @param $cubeClassName
      * @param array $definitions
      *

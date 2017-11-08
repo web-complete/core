@@ -18,6 +18,10 @@
     <filter>
         <whitelist>
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <file>./src/utils/migration/commands/MigrationUpCommand.php</file>
+                <file>./src/utils/migration/commands/MigrationDownCommand.php</file>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>
