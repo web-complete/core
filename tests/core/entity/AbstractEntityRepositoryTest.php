@@ -3,7 +3,6 @@
 use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityRepository;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\utils\hydrator\Hydrator;
 
 class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -13,8 +12,7 @@ class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
         $of = $this->createMock(ObjectFactory::class);
         $of->expects($this->once())->method('create')
             ->willReturn($this->createMock(AbstractEntity::class));
-        $hydrator = new Hydrator();
-        $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of, $hydrator]);
+        $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of]);
         /** @var AbstractEntityRepository $aer */
         $aer->create();
     }
@@ -22,14 +20,23 @@ class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
     public function testCreateFromData()
     {
         $data = [1,2,3];
-        $map = ['a' => 'b'];
 
         $of = $this->createMock(ObjectFactory::class);
-        $of->expects($this->once())->method('createFromData')->with($data, $map)
-            ->willReturn($this->createMock(AbstractEntity::class));
-        $hydrator = new Hydrator();
-        $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of, $hydrator]);
+        $of->expects($this->once())->method('create')
+            ->willReturn(new Entity2());
+        $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of]);
         /** @var AbstractEntityRepository $aer */
-        $aer->createFromData($data, $map);
+        $aer->createFromData($data);
+    }
+}
+
+class Entity2 extends AbstractEntity {
+
+    /**
+     * @return array
+     */
+    public static function fields(): array
+    {
+        return [];
     }
 }

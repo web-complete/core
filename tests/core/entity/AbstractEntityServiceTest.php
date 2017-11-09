@@ -4,9 +4,7 @@ use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityRepositoryDb;
-use WebComplete\core\entity\AbstractEntityRepository;
 use WebComplete\core\entity\AbstractEntityService;
-use WebComplete\core\utils\hydrator\Hydrator;
 
 class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
 {
@@ -75,13 +73,12 @@ class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
     protected function createAService($methods = [])
     {
         $of = $this->createMock(\WebComplete\core\factory\ObjectFactory::class);
-        $hydrator = new Hydrator();
         $parser = new ConditionDbParser();
         $conn = \Doctrine\DBAL\DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
 
         $aer = $this->getMockForAbstractClass(
             AbstractEntityRepositoryDb::class,
-            [$of, $hydrator, $parser, $conn], '', true,
+            [$of, $parser, $conn], '', true,
             true, true, $methods);
 
         foreach ($methods as $method) {
@@ -90,5 +87,4 @@ class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
 
         return $this->getMockForAbstractClass(AbstractEntityService::class, [$aer]);
     }
-
 }

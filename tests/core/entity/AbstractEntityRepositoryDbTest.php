@@ -7,7 +7,7 @@ use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityRepositoryDb;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\utils\hydrator\Hydrator;
+use WebComplete\core\utils\typecast\Cast;
 
 class AbstractEntityRepositoryDbTest extends CoreTestCase
 {
@@ -17,7 +17,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $closure = function(){};
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
         $conn->expects($this->once())->method('transactional')->with($closure);
-        $rep = $this->createRep(null, null, null, $conn);
+        $rep = $this->createRep(null, null, $conn);
         $rep->transaction($closure);
     }
 
@@ -37,7 +37,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $of = $this->createMock(ObjectFactory::class);
         $of->method('createFromData')->willReturn($entity);
 
-        $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
+        $rep = $this->createRep($of, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
         $this->assertEquals($entity, $rep->findById(1));
     }
@@ -56,11 +56,10 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
         $entity = Mocker::create(AbstractEntity::class);
         $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null], ['a' => 'b'])->willReturn($entity);
+        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null])->willReturn($entity);
 
-        $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
+        $rep = $this->createRep($of, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
-        Mocker::setProperty($rep, 'map', ['a' => 'b']);
         $this->assertEquals($entity, $rep->findOne(new Condition()));
     }
 
@@ -87,7 +86,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $of = $this->createMock(ObjectFactory::class);
         $of->method('createFromData')->willReturn($o1, $o2);
 
-        $rep = $this->createRep($of, null, null, $conn, ['selectQuery']);
+        $rep = $this->createRep($of, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
         $this->assertEquals([11 => $o1,12 => $o2], $rep->findAll(new Condition()));
     }
@@ -105,7 +104,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
-        $rep = $this->createRep(null, null, null, $conn, ['selectQuery']);
+        $rep = $this->createRep(null, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
         $this->assertEquals(3, $rep->count(new Condition()));
     }
@@ -113,11 +112,11 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
     public function testSaveNew()
     {
         $o1 = new AbstractEntityRepositoryDbTestEntity();
-        $o1->a = 1;
+        $o1->setA(1);
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
         $conn->expects($this->once())->method('insert')->with('tbl', ['a' => 1, 'arr' => null, 'arr2' => null]);
         $conn->expects($this->once())->method('lastInsertId')->willReturn(22);
-        $rep = $this->createRep(null, null, null, $conn);
+        $rep = $this->createRep(null, null, $conn);
         $rep->save($o1);
         $this->assertEquals(22, $o1->getId());
     }
@@ -126,11 +125,11 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
     {
         $o1 = new AbstractEntityRepositoryDbTestEntity();
         $o1->setId(33);
-        $o1->a = 2;
-        $o1->arr = [1,2,3];
+        $o1->setA(2);
+        $o1->setArr([1,2,3]);
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
         $conn->expects($this->once())->method('update')->with('tbl', ['id' => 33, 'a' => 2, 'arr' => '[1,2,3]', 'arr2' => null], ['t1.id' => 33]);
-        $rep = $this->createRep(null, null, null, $conn);
+        $rep = $this->createRep(null, null, $conn);
         $rep->save($o1);
         $this->assertEquals(33, $o1->getId());
     }
@@ -141,7 +140,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $o1->setId(44);
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
         $conn->expects($this->once())->method('delete')->with('tbl', ['t1.id' => 44]);
-        $rep = $this->createRep(null, null, null, $conn);
+        $rep = $this->createRep(null, null, $conn);
         $rep->delete($o1->getId());
     }
 
@@ -206,16 +205,15 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
      *
      * @return PHPUnit_Framework_MockObject_MockObject|AbstractEntityRepositoryDb
      */
-    protected  function createRep($of = null, $h = null, $p = null, $c = null, $mockedMethods = [])
+    protected  function createRep($of = null, $p = null, $c = null, $mockedMethods = [])
     {
         $of = $of ?: $this->createMock(ObjectFactory::class);
         $of->expects($this->any())->method('create')->willReturn(new AbstractEntityRepositoryDbTestEntity());
 
-        $hydrator = $h ?: new Hydrator();
         $parser = $p ?: new ConditionDbParser();
         $conn = $c ?: DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
 
-        $aer = $this->getMockForAbstractClass(AbstractEntityRepositoryDb::class, [$of, $hydrator, $parser, $conn], '', true, true, true, $mockedMethods);
+        $aer = $this->getMockForAbstractClass(AbstractEntityRepositoryDb::class, [$of, $parser, $conn], '', true, true, true, $mockedMethods);
         $reflection = new ReflectionClass($aer);
         $reflection_property = $reflection->getProperty('table');
         $reflection_property->setAccessible(true);
@@ -232,7 +230,26 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 }
 
 class AbstractEntityRepositoryDbTestEntity extends AbstractEntity {
-    public $a;
-    public $arr;
-    public $arr2;
+
+    /**
+     * @return array
+     */
+    public static function fields(): array
+    {
+        return [
+            'a' => Cast::STRING,
+            'arr' => Cast::ARRAY,
+            'arr2' => Cast::ARRAY,
+        ];
+    }
+
+    public function setA($value)
+    {
+        $this->setField('a', $value);
+    }
+
+    public function setArr($value)
+    {
+        $this->setField('arr', $value);
+    }
 }

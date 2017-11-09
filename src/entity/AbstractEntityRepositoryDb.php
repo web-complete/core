@@ -6,7 +6,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\utils\hydrator\HydratorInterface;
 use WebComplete\core\condition\Condition;
 
 abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
@@ -15,11 +14,6 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     const SERIALIZE_STRATEGY_PHP  = 2;
 
     protected $table;
-    /**
-     * map: fieldName: propertyName
-     * @var array|null
-     */
-    protected $map;
     protected $serializeFields = [];
     protected $serializeStrategy = self::SERIALIZE_STRATEGY_JSON;
 
@@ -33,17 +27,15 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
 
     /**
      * @param ObjectFactory $factory
-     * @param HydratorInterface $hydrator
      * @param ConditionDbParser $conditionParser
      * @param Connection $db
      */
     public function __construct(
         ObjectFactory $factory,
-        HydratorInterface $hydrator,
         ConditionDbParser $conditionParser,
         Connection $db
     ) {
-        parent::__construct($factory, $hydrator);
+        parent::__construct($factory);
         $this->db = $db;
         $this->conditionParser = $conditionParser;
     }
@@ -122,7 +114,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      */
     public function save(AbstractEntity $item)
     {
-        $data = $this->hydrator->extract($item, $this->getMapping());
+        $data = $item->mapToArray();
         $this->beforeDataSave($data);
         $this->serializeFields($data);
         if ($id = $item->getId()) {
@@ -178,14 +170,6 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     }
 
     /**
-     * @return array|null
-     */
-    public function getMapping()
-    {
-        return $this->map;
-    }
-
-    /**
      * @param Condition|null $condition
      * @return QueryBuilder
      */
@@ -193,7 +177,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     {
         $queryBuilder = $this->db->createQueryBuilder();
         $queryBuilder->select(['t1.*'])->from($this->table, 't1');
-        $this->conditionParser->parse($queryBuilder, $condition, $this->getMapping());
+        $this->conditionParser->parse($queryBuilder, $condition);
         return $queryBuilder;
     }
 
@@ -210,10 +194,10 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      *
      * @return AbstractEntity
      */
-    private function rowToEntity($data)
+    private function rowToEntity($data): AbstractEntity
     {
         $this->unserializeFields($data);
-        $entity = $this->factory->createFromData($data, $this->getMapping());
+        $entity = $this->factory->createFromData($data);
         /** @var AbstractEntity $entity */
         return $entity;
     }

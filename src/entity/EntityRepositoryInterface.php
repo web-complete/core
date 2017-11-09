@@ -20,11 +20,10 @@ interface EntityRepositoryInterface
 
     /**
      * @param array $data
-     * @param array|null $map
      *
      * @return AbstractEntity
      */
-    public function createFromData(array $data, array $map = null): AbstractEntity;
+    public function createFromData(array $data): AbstractEntity;
 
     /**
      * @param $id

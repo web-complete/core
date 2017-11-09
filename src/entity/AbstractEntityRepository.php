@@ -4,7 +4,6 @@ namespace WebComplete\core\entity;
 
 use WebComplete\core\condition\Condition;
 use WebComplete\core\factory\ObjectFactory;
-use WebComplete\core\utils\hydrator\HydratorInterface;
 
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
@@ -15,18 +14,11 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected $factory;
 
     /**
-     * @var HydratorInterface
-     */
-    protected $hydrator;
-
-    /**
      * @param ObjectFactory $factory
-     * @param HydratorInterface $hydrator
      */
-    public function __construct(ObjectFactory $factory, HydratorInterface $hydrator)
+    public function __construct(ObjectFactory $factory)
     {
         $this->factory = $factory;
-        $this->hydrator = $hydrator;
     }
 
     /**
@@ -41,14 +33,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     /**
      * @param array $data
-     * @param array|null $map
      *
      * @return AbstractEntity
      */
-    public function createFromData(array $data, array $map = null): AbstractEntity
+    public function createFromData(array $data): AbstractEntity
     {
-        $result = $this->factory->createFromData($data, $map);
         /** @var AbstractEntity $result */
+        $result = $this->factory->create();
+        $result->mapFromArray($data);
         return $result;
     }
 
