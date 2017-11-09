@@ -58,6 +58,16 @@ class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
         $this->createAService(['delete'])->delete(1);
     }
 
+    public function testProxyDeleteAll()
+    {
+        $this->createAService(['deleteAll'])->deleteAll();
+    }
+
+    public function testProxyGetMap()
+    {
+        $this->createAService(['getMap'])->getMap('id');
+    }
+
     /**
      * @param array $methods
      * @return PHPUnit_Framework_MockObject_MockObject|AbstractEntityService

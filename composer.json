@@ -39,6 +39,9 @@
     "autoload": {
         "psr-4": {
             "WebComplete\\core\\": "src"
-        }
+        },
+        "files": [
+            "src/utils/typecast/functions.php"
+        ]
     }
 }

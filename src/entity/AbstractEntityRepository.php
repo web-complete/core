@@ -2,6 +2,7 @@
 
 namespace WebComplete\core\entity;
 
+use WebComplete\core\condition\Condition;
 use WebComplete\core\factory\ObjectFactory;
 use WebComplete\core\utils\hydrator\HydratorInterface;
 
@@ -56,4 +57,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param $data
      */
     abstract protected function beforeDataSave(&$data);
+
+    /**
+     * @param array $conditions
+     *
+     * @return Condition
+     */
+    protected function createCondition(array $conditions = []): Condition
+    {
+        return new Condition($conditions);
+    }
 }

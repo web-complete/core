@@ -71,7 +71,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      */
     public function findById($id)
     {
-        return $this->findOne(new Condition(['t1.id' => $id]));
+        return $this->findOne($this->createCondition(['t1.id' => $id]));
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
      */
     public function save(AbstractEntity $item)
     {
-        $data = $this->hydrator->extract($item, $this->map);
+        $data = $this->hydrator->extract($item, $this->getMapping());
         $this->beforeDataSave($data);
         $this->serializeFields($data);
         if ($id = $item->getId()) {
@@ -178,6 +178,14 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     }
 
     /**
+     * @return array|null
+     */
+    public function getMapping()
+    {
+        return $this->map;
+    }
+
+    /**
      * @param Condition|null $condition
      * @return QueryBuilder
      */
@@ -185,7 +193,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     {
         $queryBuilder = $this->db->createQueryBuilder();
         $queryBuilder->select(['t1.*'])->from($this->table, 't1');
-        $this->conditionParser->parse($queryBuilder, $condition, $this->map);
+        $this->conditionParser->parse($queryBuilder, $condition, $this->getMapping());
         return $queryBuilder;
     }
 
@@ -205,7 +213,7 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     private function rowToEntity($data)
     {
         $this->unserializeFields($data);
-        $entity = $this->factory->createFromData($data, $this->map);
+        $entity = $this->factory->createFromData($data, $this->getMapping());
         /** @var AbstractEntity $entity */
         return $entity;
     }

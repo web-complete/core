@@ -126,6 +126,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      * @param Condition|null $condition
      *
      * @return array
+     * @throws \TypeError
      */
     public function getMap(string $field, string $key = 'id', Condition $condition = null): array
     {
