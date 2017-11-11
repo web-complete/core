@@ -14,9 +14,10 @@ class ConditionMicroDbParser
      */
     public function filter(Condition $condition = null, int &$limit = null, int &$offset = null)
     {
+        $offset = (int)$offset;
         if ($condition) {
             $limit = $condition->getLimit();
-            $offset = $condition->getOffset();
+            $offset = (int)$condition->getOffset();
             $conditions = $condition->getConditions();
             return function (array $item) use ($conditions) {
                 foreach ($conditions as $cond) {

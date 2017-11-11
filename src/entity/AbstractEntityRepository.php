@@ -45,12 +45,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * Adjust data before save
-     * @param $data
-     */
-    abstract protected function beforeDataSave(&$data);
-
-    /**
      * @param array $conditions
      *
      * @return Condition

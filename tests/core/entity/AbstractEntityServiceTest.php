@@ -72,7 +72,7 @@ class AbstractEntityServiceTest extends \PHPUnit\Framework\TestCase
      */
     protected function createAService($methods = [])
     {
-        $of = $this->createMock(\WebComplete\core\factory\ObjectFactory::class);
+        $of = $this->createMock(\WebComplete\core\factory\EntityFactory::class);
         $parser = new ConditionDbParser();
         $conn = \Doctrine\DBAL\DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
 

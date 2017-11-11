@@ -197,8 +197,9 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     private function rowToEntity($data): AbstractEntity
     {
         $this->unserializeFields($data);
-        $entity = $this->factory->createFromData($data);
         /** @var AbstractEntity $entity */
+        $entity = $this->factory->create();
+        $entity->mapFromArray($data);
         return $entity;
     }
 

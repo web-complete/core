@@ -2,14 +2,14 @@
 
 use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityRepository;
-use WebComplete\core\factory\ObjectFactory;
+use WebComplete\core\factory\EntityFactory;
 
 class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testCreate()
     {
-        $of = $this->createMock(ObjectFactory::class);
+        $of = $this->createMock(EntityFactory::class);
         $of->expects($this->once())->method('create')
             ->willReturn($this->createMock(AbstractEntity::class));
         $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of]);
@@ -21,7 +21,7 @@ class AbstractEntityRepositoryTest extends \PHPUnit\Framework\TestCase
     {
         $data = [1,2,3];
 
-        $of = $this->createMock(ObjectFactory::class);
+        $of = $this->createMock(EntityFactory::class);
         $of->expects($this->once())->method('create')
             ->willReturn(new Entity2());
         $aer = $this->getMockForAbstractClass(AbstractEntityRepository::class, [$of]);

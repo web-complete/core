@@ -6,7 +6,7 @@ use WebComplete\core\condition\Condition;
 use WebComplete\core\condition\ConditionDbParser;
 use WebComplete\core\entity\AbstractEntity;
 use WebComplete\core\entity\AbstractEntityRepositoryDb;
-use WebComplete\core\factory\ObjectFactory;
+use WebComplete\core\factory\EntityFactory;
 use WebComplete\core\utils\typecast\Cast;
 
 class AbstractEntityRepositoryDbTest extends CoreTestCase
@@ -33,9 +33,11 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
-        $entity = Mocker::create(AbstractEntity::class);
-        $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->willReturn($entity);
+        $entity = Mocker::create(AbstractEntity::class, [
+            Mocker::method('mapFromArray', 1)
+        ]);
+        $of = $this->createMock(EntityFactory::class);
+        $of->method('create')->willReturn($entity);
 
         $rep = $this->createRep($of, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
@@ -54,9 +56,11 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
 
         $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
 
-        $entity = Mocker::create(AbstractEntity::class);
-        $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->with(['a' => 1, 'arr' => [1,2,3], 'arr2' => null])->willReturn($entity);
+        $entity = Mocker::create(AbstractEntity::class, [
+            Mocker::method('mapFromArray', 1)
+        ]);
+        $of = $this->createMock(EntityFactory::class);
+        $of->method('create')->willReturn($entity);
 
         $rep = $this->createRep($of, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
@@ -83,8 +87,8 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
         $o2->setId(12);
         $o2->a = 2;
 
-        $of = $this->createMock(ObjectFactory::class);
-        $of->method('createFromData')->willReturn($o1, $o2);
+        $of = $this->createMock(EntityFactory::class);
+        $of->method('create')->willReturn($o1, $o2);
 
         $rep = $this->createRep($of, null, $conn, ['selectQuery']);
         $rep->expects($this->once())->method('selectQuery')->willReturn($qb);
@@ -207,7 +211,7 @@ class AbstractEntityRepositoryDbTest extends CoreTestCase
      */
     protected  function createRep($of = null, $p = null, $c = null, $mockedMethods = [])
     {
-        $of = $of ?: $this->createMock(ObjectFactory::class);
+        $of = $of ?: $this->createMock(EntityFactory::class);
         $of->expects($this->any())->method('create')->willReturn(new AbstractEntityRepositoryDbTestEntity());
 
         $parser = $p ?: new ConditionDbParser();

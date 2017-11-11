@@ -45,6 +45,10 @@ abstract class AbstractEntity
         foreach ($data as $field => $value) {
             $this->setField($field, $value);
         }
+
+        if (isset($data['id'])) {
+            $this->setId($data['id']);
+        }
     }
 
     /**

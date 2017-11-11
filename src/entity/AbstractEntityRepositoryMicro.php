@@ -34,15 +34,6 @@ class AbstractEntityRepositoryMicro extends AbstractEntityRepository
     }
 
     /**
-     * Adjust data before save
-     *
-     * @param $data
-     */
-    protected function beforeDataSave(&$data)
-    {
-    }
-
-    /**
      * @param \Closure $closure
      *
      * @throws \Exception
@@ -78,7 +69,8 @@ class AbstractEntityRepositoryMicro extends AbstractEntityRepository
         );
         if ($row) {
             /** @var AbstractEntity $result */
-            $result = $this->factory->createFromData($row);
+            $result = $this->factory->create();
+            $result->mapFromArray($row);
         }
 
         return $result;
@@ -93,16 +85,16 @@ class AbstractEntityRepositoryMicro extends AbstractEntityRepository
     public function findAll(Condition $condition = null): array
     {
         $result = [];
-        $filter = $this->conditionParser->filter($condition, $limit, $offset);
         $rows = $this->microDb->getCollection($this->collectionName)->fetchAll(
-            $filter,
+            $this->conditionParser->filter($condition, $limit, $offset),
             $this->conditionParser->sort($condition),
             $limit,
             $offset
         );
         foreach ($rows as $row) {
             /** @var AbstractEntity $entity */
-            $entity = $this->factory->createFromData($row);
+            $entity = $this->factory->create();
+            $entity->mapFromArray($row);
             $result[$entity->getId()] = $entity;
         }
 
@@ -155,7 +147,13 @@ class AbstractEntityRepositoryMicro extends AbstractEntityRepository
      */
     public function deleteAll(Condition $condition = null)
     {
-        $this->microDb->getCollection($this->collectionName)->delete($this->conditionParser->filter($condition));
+        $filter = $this->conditionParser->filter($condition);
+        if (!$filter) {
+            $filter = function () {
+                return true;
+            };
+        }
+        $this->microDb->getCollection($this->collectionName)->delete($filter);
     }
 
     /**
