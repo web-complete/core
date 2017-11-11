@@ -3,20 +3,20 @@
 namespace WebComplete\core\entity;
 
 use WebComplete\core\condition\Condition;
-use WebComplete\core\factory\ObjectFactory;
+use WebComplete\core\factory\EntityFactory;
 
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
 
     /**
-     * @var ObjectFactory
+     * @var EntityFactory
      */
     protected $factory;
 
     /**
-     * @param ObjectFactory $factory
+     * @param EntityFactory $factory
      */
-    public function __construct(ObjectFactory $factory)
+    public function __construct(EntityFactory $factory)
     {
         $this->factory = $factory;
     }

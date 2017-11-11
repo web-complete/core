@@ -5,7 +5,7 @@ namespace WebComplete\core\entity;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use WebComplete\core\condition\ConditionDbParser;
-use WebComplete\core\factory\ObjectFactory;
+use WebComplete\core\factory\EntityFactory;
 use WebComplete\core\condition\Condition;
 
 abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
@@ -26,12 +26,12 @@ abstract class AbstractEntityRepositoryDb extends AbstractEntityRepository
     protected $conditionParser;
 
     /**
-     * @param ObjectFactory $factory
+     * @param EntityFactory $factory
      * @param ConditionDbParser $conditionParser
      * @param Connection $db
      */
     public function __construct(
-        ObjectFactory $factory,
+        EntityFactory $factory,
         ConditionDbParser $conditionParser,
         Connection $db
     ) {

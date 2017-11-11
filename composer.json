@@ -29,6 +29,7 @@
         "symfony/cache": "^3.3",
         "symfony/finder": "^3.3",
         "symfony/console": "^3.3",
+        "web-complete/micro-db": "^1",
         "hanneskod/classtools": "~1.0"
     },
     "require-dev": {
