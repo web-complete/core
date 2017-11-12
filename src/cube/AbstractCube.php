@@ -2,6 +2,8 @@
 
 namespace WebComplete\core\cube;
 
+use WebComplete\core\utils\container\ContainerInterface;
+
 abstract class AbstractCube
 {
 
@@ -18,5 +20,11 @@ abstract class AbstractCube
     public function getMigrations(): array
     {
         return [];
+    }
+
+    /**
+     */
+    public function bootstrap(ContainerInterface $container)
+    {
     }
 }
