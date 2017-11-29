@@ -23,4 +23,13 @@ class SecurityHelperTest extends TestCase
         $this->assertNotEquals('123', $maskedToken);
         $this->assertEquals('123', $unmaskToken);
     }
+
+    public function testGenerateRandomString()
+    {
+        $helper = new SecurityHelper(new StringHelper());
+        $string1 = $helper->generateRandomString(50);
+        $string2 = $helper->generateRandomString(50);
+        $this->assertEquals(50, strlen($string1));
+        $this->assertNotEquals($string1, $string2);
+    }
 }

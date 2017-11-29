@@ -83,4 +83,23 @@ class SecurityHelper
         }
         throw new \RuntimeException('Function random_bytes not found');
     }
+
+    /**
+     * Generates a random string of specified length.
+     * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
+     *
+     * @param int $length the length of the key in characters
+     *
+     * @return string the generated random key
+     * @throws \RuntimeException
+     */
+    public function generateRandomString(int $length = 32): string
+    {
+        if ($length < 1) {
+            throw new \RuntimeException('First parameter ($length) must be greater than 0');
+        }
+
+        $bytes = $this->generateRandomKey($length);
+        return \substr($this->stringHelper->base64UrlEncode($bytes), 0, $length);
+    }
 }
