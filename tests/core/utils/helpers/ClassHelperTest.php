@@ -18,10 +18,6 @@ class ClassHelperTest extends TestCase
         ];
         $map = $classHelper->getClassMap(__DIR__ . '/../../../fixtures/class_helper');
         $this->assertCount(2, $map);
-        $this->assertEquals(array_values($expected), array_values($map));
-        $expected = array_keys($expected);
-        $map = array_keys($map);
-        $this->assertContains($expected[0], $map[0]);
-        $this->assertContains($expected[1], $map[1]);
+        $this->assertEquals([], array_diff(array_values($expected), array_values($map)));
     }
 }
