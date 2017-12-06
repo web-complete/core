@@ -8,13 +8,6 @@ abstract class AbstractCube
 {
 
     /**
-     * @param $definitions
-     *
-     * @return void
-     */
-    abstract public function registerDependencies(array &$definitions);
-
-    /**
      * @return array [sort => migration class]
      */
     public function getMigrations(): array
@@ -25,6 +18,15 @@ abstract class AbstractCube
     /**
      */
     public function bootstrap(ContainerInterface $container)
+    {
+    }
+
+    /**
+     * @param $definitions
+     *
+     * @return void
+     */
+    public function registerDependencies(array &$definitions)
     {
     }
 }
