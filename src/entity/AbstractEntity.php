@@ -69,6 +69,35 @@ abstract class AbstractEntity
 
     /**
      * @param $name
+     *
+     * @return mixed|null
+     */
+    public function __get($name)
+    {
+        return $this->getField($name);
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        $this->setField($name, $value);
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->data[$name]);
+    }
+
+    /**
+     * @param $name
      * @param $value
      */
     protected function setField($name, $value)
