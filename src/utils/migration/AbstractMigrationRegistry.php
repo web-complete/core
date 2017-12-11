@@ -29,7 +29,6 @@ abstract class AbstractMigrationRegistry implements MigrationRegistryInterface
      */
     public function getMigration($class): MigrationInterface
     {
-        $migration = null;
         try {
             $migration = $this->container->get($class);
             if (!$migration || !$migration instanceof MigrationInterface) {

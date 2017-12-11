@@ -3,6 +3,7 @@
 namespace WebComplete\core\cube;
 
 use Mvkasatkin\mocker\Mocker;
+use WebComplete\core\utils\container\ContainerAdapter;
 
 class CubeTest extends \CoreTestCase
 {
@@ -11,6 +12,7 @@ class CubeTest extends \CoreTestCase
     {
         /** @var AbstractCube $cube */
         $cube = Mocker::create(AbstractCube::class);
+        $cube->bootstrap(new ContainerAdapter());
         $this->assertEquals([], $cube->getMigrations());
     }
 }
