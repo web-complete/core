@@ -15,6 +15,7 @@ class ConditionMicroDbParser
     public function filter(Condition $condition = null, int &$limit = null, int &$offset = null)
     {
         $offset = (int)$offset;
+
         if ($condition) {
             $limit = $condition->getLimit();
             $offset = (int)$condition->getOffset();
