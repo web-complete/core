@@ -3,6 +3,7 @@
 namespace WebComplete\core\entity;
 
 use WebComplete\core\condition\Condition;
+use WebComplete\core\utils\paginator\Paginator;
 
 abstract class AbstractEntityService implements EntityRepositoryInterface
 {
@@ -48,6 +49,24 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     public function createFromData(array $data): AbstractEntity
     {
         return $this->repository->createFromData($data);
+    }
+
+    /**
+     * @param Paginator $paginator
+     * @param Condition $condition
+     * @return AbstractEntity[]
+     */
+    public function list(Paginator $paginator, Condition $condition): array
+    {
+        if (!$paginator->getTotal()) {
+            if (!$total = $this->count($condition)) {
+                return [];
+            }
+            $paginator->setTotal($total);
+        }
+        $condition->limit($paginator->getLimit());
+        $condition->offset($paginator->getOffset());
+        return $this->findAll($condition);
     }
 
     /**
