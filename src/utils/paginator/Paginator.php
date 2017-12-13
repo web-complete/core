@@ -41,7 +41,6 @@ class Paginator
     public function setCurrentPage($currentPage)
     {
         $this->currentPage = (int)$currentPage;
-        $this->validate();
     }
 
     /**
@@ -58,7 +57,6 @@ class Paginator
     public function setItemsPerPage($itemsPerPage)
     {
         $this->itemsPerPage = (int)$itemsPerPage;
-        $this->validate();
     }
 
 
