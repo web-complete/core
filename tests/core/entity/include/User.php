@@ -22,31 +22,31 @@ class User extends AbstractEntity
 
     public function setName($value)
     {
-        $this->setField('name', $value);
+        $this->set('name', $value);
     }
 
     public function getName()
     {
-        return $this->getField('name');
+        return $this->get('name');
     }
 
     public function setType($value)
     {
-        $this->setField('type', $value);
+        $this->set('type', $value);
     }
 
     public function getType()
     {
-        return $this->getField('type');
+        return $this->get('type');
     }
 
     public function setActive($value)
     {
-        $this->setField('active', $value);
+        $this->set('active', $value);
     }
 
     public function getActive()
     {
-        return $this->getField('active');
+        return $this->get('active');
     }
 }

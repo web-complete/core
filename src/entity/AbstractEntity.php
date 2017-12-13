@@ -43,7 +43,7 @@ abstract class AbstractEntity
         }
 
         foreach ($data as $field => $value) {
-            $this->setField($field, $value);
+            $this->set($field, $value);
         }
 
         if (isset($data['id'])) {
@@ -61,7 +61,7 @@ abstract class AbstractEntity
         ];
         $fields = \array_keys(static::fields());
         foreach ($fields as $field) {
-            $result[$field] = $this->getField($field);
+            $result[$field] = $this->get($field);
         }
 
         return $result;
@@ -74,7 +74,7 @@ abstract class AbstractEntity
      */
     public function __get($name)
     {
-        return $this->getField($name);
+        return $this->get($name);
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class AbstractEntity
      */
     public function __set($name, $value)
     {
-        $this->setField($name, $value);
+        $this->set($name, $value);
     }
 
     /**
@@ -97,25 +97,25 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param $name
+     * @param $field
      * @param $value
      */
-    protected function setField($name, $value)
+    public function set($field, $value)
     {
         $fields = static::fields();
-        if (isset($fields[$name])) {
-            $this->data[$name] = cast($value, $fields[$name]);
+        if (isset($fields[$field])) {
+            $this->data[$field] = cast($value, $fields[$field]);
         }
     }
 
     /**
-     * @param $name
+     * @param $field
      * @param null $default
      *
      * @return mixed|null
      */
-    protected function getField($name, $default = null)
+    public function get($field, $default = null)
     {
-        return $this->data[$name] ?? $default;
+        return $this->data[$field] ?? $default;
     }
 }

@@ -249,11 +249,11 @@ class AbstractEntityRepositoryDbTestEntity extends AbstractEntity {
 
     public function setA($value)
     {
-        $this->setField('a', $value);
+        $this->set('a', $value);
     }
 
     public function setArr($value)
     {
-        $this->setField('arr', $value);
+        $this->set('arr', $value);
     }
 }
