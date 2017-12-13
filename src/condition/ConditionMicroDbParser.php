@@ -30,9 +30,15 @@ class ConditionMicroDbParser
                     $value = $item[$cond[0]] ?? null;
                     switch ($type) {
                         case Condition::EQUALS:
-                            /** @noinspection TypeUnsafeComparisonInspection */
-                            if ($value != $cond[1]) {
-                                return false;
+                            if (\is_array($value)) {
+                                if (!\in_array($cond[1], $value, false)) {
+                                    return false;
+                                }
+                            } else {
+                                /** @noinspection TypeUnsafeComparisonInspection */
+                                if ($value != $cond[1]) {
+                                    return false;
+                                }
                             }
                             break;
                         case Condition::NOT_EQUALS:
