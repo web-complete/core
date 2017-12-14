@@ -149,4 +149,14 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     {
         return $this->repository->getMap($field, $key, $condition);
     }
+
+    /**
+     * @param array $conditions
+     *
+     * @return Condition
+     */
+    public function createCondition(array $conditions = []): Condition
+    {
+        return $this->repository->createCondition($conditions);
+    }
 }

@@ -73,4 +73,11 @@ interface EntityRepositoryInterface
      * @throws \TypeError
      */
     public function getMap(string $field, string $key = 'id', Condition $condition = null): array;
+
+    /**
+     * @param array $conditions
+     *
+     * @return Condition
+     */
+    public function createCondition(array $conditions = []): Condition;
 }

@@ -49,7 +49,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return Condition
      */
-    protected function createCondition(array $conditions = []): Condition
+    public function createCondition(array $conditions = []): Condition
     {
         return new Condition($conditions);
     }
