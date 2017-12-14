@@ -6,6 +6,13 @@ interface ContainerInterface extends \Psr\Container\ContainerInterface
 {
 
     /**
+     * @param string $id
+     *
+     * @return mixed
+     */
+    public function get($id);
+
+    /**
      * @param $id
      * @param $value
      */

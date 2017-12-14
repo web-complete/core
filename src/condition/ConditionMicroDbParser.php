@@ -15,6 +15,7 @@ class ConditionMicroDbParser
     public function filter(Condition $condition = null, int &$limit = null, int &$offset = null)
     {
         $offset = (int)$offset;
+
         if ($condition) {
             $limit = $condition->getLimit();
             $offset = (int)$condition->getOffset();
@@ -27,51 +28,58 @@ class ConditionMicroDbParser
 
                     $cond = \array_values($cond);
                     $type = \array_shift($cond);
+                    $value = $item[$cond[0]] ?? null;
                     switch ($type) {
                         case Condition::EQUALS:
-                            /** @noinspection TypeUnsafeComparisonInspection */
-                            if ($item[$cond[0]] != $cond[1]) {
-                                return false;
+                            if (\is_array($value)) {
+                                if (!\in_array($cond[1], $value, false)) {
+                                    return false;
+                                }
+                            } else {
+                                /** @noinspection TypeUnsafeComparisonInspection */
+                                if ($value != $cond[1]) {
+                                    return false;
+                                }
                             }
                             break;
                         case Condition::NOT_EQUALS:
                             /** @noinspection TypeUnsafeComparisonInspection */
-                            if ($item[$cond[0]] == $cond[1]) {
+                            if ($value == $cond[1]) {
                                 return false;
                             }
                             break;
                         case Condition::LESS_THAN:
-                            if ($item[$cond[0]] >= $cond[1]) {
+                            if ($value >= $cond[1]) {
                                 return false;
                             }
                             break;
                         case Condition::GREATER_THAN:
-                            if ($item[$cond[0]] <= $cond[1]) {
+                            if ($value <= $cond[1]) {
                                 return false;
                             }
                             break;
                         case Condition::LESS_OR_EQUALS:
-                            if ($item[$cond[0]] > $cond[1]) {
+                            if ($value > $cond[1]) {
                                 return false;
                             }
                             break;
                         case Condition::GREATER_OR_EQUALS:
-                            if ($item[$cond[0]] < $cond[1]) {
+                            if ($value < $cond[1]) {
                                 return false;
                             }
                             break;
                         case Condition::BETWEEN:
-                            if ($item[$cond[0]] < $cond[1] || $item[$cond[0]] > $cond[2]) {
+                            if ($value < $cond[1] || $value > $cond[2]) {
                                 return false;
                             }
                             break;
                         case Condition::LIKE:
-                            if (!\mb_strstr($item[$cond[0]], $cond[1])) {
+                            if (!\mb_strstr($value, $cond[1])) {
                                 return false;
                             }
                             break;
                         case Condition::IN:
-                            if (!\in_array($item[$cond[0]], $cond[1], false)) {
+                            if (!\in_array($value, $cond[1], false)) {
                                 return false;
                             }
                             break;
