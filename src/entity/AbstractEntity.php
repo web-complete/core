@@ -97,10 +97,10 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param $field
+     * @param string $field
      * @param $value
      */
-    public function set($field, $value)
+    public function set(string $field, $value)
     {
         $fields = static::fields();
         if (isset($fields[$field])) {
@@ -109,13 +109,23 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param $field
+     * @param string $field
      * @param null $default
      *
      * @return mixed|null
      */
-    public function get($field, $default = null)
+    public function get(string $field, $default = null)
     {
         return $this->data[$field] ?? $default;
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function has(string $field): bool
+    {
+        return isset(static::fields()[$field]);
     }
 }

@@ -163,6 +163,18 @@ class Condition
     }
 
     /**
+     * @param string $sortField
+     * @param int $sortDir
+     *
+     * @return $this
+     */
+    public function setSort(string $sortField, int $sortDir)
+    {
+        $this->sort = [];
+        return $this->addSort($sortField, $sortDir);
+    }
+
+    /**
      * @param $offset
      * @return $this
      */
