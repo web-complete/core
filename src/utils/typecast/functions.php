@@ -20,10 +20,14 @@ if (!\function_exists('\WebComplete\core\utils\typecast\cast')) {
     {
         $factory = new Factory();
         if (\is_array($config)) {
-            /** @var TypeArrayOfType $arrayOfType */
-            $config = ($arrayOfType = $factory->checkArrayOfType($config))
-                ? $arrayOfType
-                : new Scheme($config, $factory, $strict);
+            if (\is_callable($config)) {
+                $config = $factory->createType($config);
+            } else {
+                /** @var TypeArrayOfType $arrayOfType */
+                $config = ($arrayOfType = $factory->checkArrayOfType($config))
+                    ? $arrayOfType
+                    : new Scheme($config, $factory, $strict);
+            }
         } elseif (!$config instanceof CastInterface) {
             $config = $factory->createType($config);
         }

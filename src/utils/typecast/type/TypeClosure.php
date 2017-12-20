@@ -5,16 +5,16 @@ namespace WebComplete\core\utils\typecast\type;
 class TypeClosure implements CastInterface
 {
     /**
-     * @var \Closure
+     * @var callable
      */
-    protected $closure;
+    protected $callable;
 
     /**
-     * @param \Closure $closure
+     * @param callable $callable
      */
-    public function __construct(\Closure $closure)
+    public function __construct(callable $callable)
     {
-        $this->closure = $closure;
+        $this->callable = $callable;
     }
 
     /**
@@ -24,6 +24,6 @@ class TypeClosure implements CastInterface
      */
     public function cast($value)
     {
-        return ($this->closure)($value);
+        return \call_user_func($this->callable, $value);
     }
 }

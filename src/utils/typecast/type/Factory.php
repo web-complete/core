@@ -17,7 +17,7 @@ class Factory
     public function createType($type): CastInterface
     {
         $result = null;
-        if ($type instanceof \Closure) {
+        if (\is_callable($type)) {
             $result = new TypeClosure($type);
         } elseif (\in_array($type, Cast::TYPES, true)) {
             switch ($type) {
