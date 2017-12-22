@@ -37,7 +37,7 @@ class StringHelper
      * @param string $string the string being measured for length
      * @return int the number of bytes in the given string.
      */
-    public function byteLength($string)
+    public function byteLength($string): int
     {
         return \mb_strlen($string, '8bit');
     }
@@ -52,8 +52,55 @@ class StringHelper
      * @return string the extracted part of string, or FALSE on failure or an empty string.
      * @see http://www.php.net/manual/en/function.substr.php
      */
-    public function byteSubstr($string, $start, $length = null)
+    public function byteSubstr($string, $start, $length = null): string
     {
-        return \mb_substr($string, $start, $length === null ? \mb_strlen($string, '8bit') : $length, '8bit');
+        return \mb_substr($string, $start, $length ?? \mb_strlen($string, '8bit'), '8bit');
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    public function rus2translit($string): string
+    {
+        $converter = [
+            'а' => 'a', 'б' => 'b', 'в' => 'v',
+            'г' => 'g', 'д' => 'd', 'е' => 'e',
+            'ё' => 'e', 'ж' => 'zh', 'з' => 'z',
+            'и' => 'i', 'й' => 'y', 'к' => 'k',
+            'л' => 'l', 'м' => 'm', 'н' => 'n',
+            'о' => 'o', 'п' => 'p', 'р' => 'r',
+            'с' => 's', 'т' => 't', 'у' => 'u',
+            'ф' => 'f', 'х' => 'h', 'ц' => 'c',
+            'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch',
+            'ь' => '', 'ы' => 'y', 'ъ' => '',
+            'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
+
+            'А' => 'A', 'Б' => 'B', 'В' => 'V',
+            'Г' => 'G', 'Д' => 'D', 'Е' => 'E',
+            'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z',
+            'И' => 'I', 'Й' => 'Y', 'К' => 'K',
+            'Л' => 'L', 'М' => 'M', 'Н' => 'N',
+            'О' => 'O', 'П' => 'P', 'Р' => 'R',
+            'С' => 'S', 'Т' => 'T', 'У' => 'U',
+            'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
+            'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sch',
+            'Ь' => '', 'Ы' => 'Y', 'Ъ' => '',
+            'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
+        ];
+        return strtr($string, $converter);
+    }
+
+    /**
+     * @param $str
+     * @return mixed|string
+     */
+    public function str2url($str)
+    {
+        $str = $this->rus2translit($str);
+        $str = \strtolower($str);
+        $str = \preg_replace('~[^-a-z0-9]+~u', '-', $str);
+        $str = \trim($str, '-');
+        return $str;
     }
 }
