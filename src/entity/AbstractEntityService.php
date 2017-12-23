@@ -125,7 +125,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface, Obser
      */
     public function save(AbstractEntity $item, array $oldData = [])
     {
-        $eventData = ['service' => $this, 'item' => $item, 'oldData' => $oldData];
+        $eventData = ['item' => $item, 'oldData' => $oldData];
         $this->trigger(self::EVENT_SAVE_BEFORE, $eventData);
         $this->repository->save($item);
         $this->trigger(self::EVENT_SAVE_AFTER, $eventData);
@@ -137,7 +137,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface, Obser
      */
     public function delete($id)
     {
-        $eventData = ['service' => $this, 'id' => $id];
+        $eventData = ['id' => $id];
         $this->trigger(self::EVENT_DELETE_BEFORE, $eventData);
         $this->repository->delete($id);
         $this->trigger(self::EVENT_DELETE_AFTER, $eventData);
@@ -148,7 +148,7 @@ abstract class AbstractEntityService implements EntityRepositoryInterface, Obser
      */
     public function deleteAll(Condition $condition = null)
     {
-        $eventData = ['service' => $this, 'condition' => $condition];
+        $eventData = ['condition' => $condition];
         $this->trigger(self::EVENT_DELETE_ALL_BEFORE, $eventData);
         $this->repository->deleteAll($condition);
         $this->trigger(self::EVENT_DELETE_ALL_AFTER, $eventData);
