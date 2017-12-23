@@ -132,12 +132,12 @@ abstract class AbstractEntityService implements EntityRepositoryInterface, Obser
     }
 
     /**
-     * Proxy method
      * @param $id
+     * @param AbstractEntity|null $item
      */
-    public function delete($id)
+    public function delete($id, AbstractEntity $item = null)
     {
-        $eventData = ['id' => $id];
+        $eventData = ['id' => $id, 'item' => $item];
         $this->trigger(self::EVENT_DELETE_BEFORE, $eventData);
         $this->repository->delete($id);
         $this->trigger(self::EVENT_DELETE_AFTER, $eventData);

@@ -13,9 +13,11 @@ trait TraitObservable
      */
     public function trigger(string $eventName, array $eventData)
     {
-        $listeners = $this->listeners[$eventName] ?? [];
-        foreach ($listeners as $listener) {
-            \call_user_func($listener[1], $eventData);
+        if ($this->listeners) {
+            $listeners = $this->listeners[$eventName] ?? [];
+            foreach ($listeners as $listener) {
+                \call_user_func($listener[1], $eventData);
+            }
         }
     }
 

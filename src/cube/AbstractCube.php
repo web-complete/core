@@ -6,6 +6,8 @@ use WebComplete\core\utils\container\ContainerInterface;
 
 abstract class AbstractCube
 {
+    public $enabled = true;
+    public $bootstrapAfterCubeClass = null;
 
     /**
      * @return array [sort => migration class]

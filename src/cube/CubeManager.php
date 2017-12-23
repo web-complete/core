@@ -3,6 +3,7 @@
 namespace WebComplete\core\cube;
 
 use Psr\SimpleCache\CacheInterface;
+use WebComplete\core\utils\container\ContainerInterface;
 use WebComplete\core\utils\helpers\ClassHelper;
 
 class CubeManager
@@ -70,8 +71,10 @@ class CubeManager
                 throw new CubeException($cubeClassName . ' is not an instance of ' . AbstractCube::class);
             }
 
-            $cube->registerDependencies($definitions);
-            $this->registered[$cubeClassName] = $cube;
+            if ($cube->enabled) {
+                $cube->registerDependencies($definitions);
+                $this->registered[$cubeClassName] = $cube;
+            }
         }
     }
 
@@ -106,5 +109,15 @@ class CubeManager
             $this->cache->set($key, $result);
         }
         return $result;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function bootstrap(ContainerInterface $container)
+    {
+        foreach ($this->getCubes() as $cube) {
+            $cube->bootstrap($container);
+        }
     }
 }
