@@ -3,11 +3,14 @@
 namespace WebComplete\core\entity;
 
 use WebComplete\core\condition\Condition;
-use WebComplete\core\utils\event\EventService;
+use WebComplete\core\utils\event\Observable;
 use WebComplete\core\utils\paginator\Paginator;
+use WebComplete\core\utils\traits\TraitObservable;
 
-abstract class AbstractEntityService implements EntityRepositoryInterface
+abstract class AbstractEntityService implements EntityRepositoryInterface, Observable
 {
+    use TraitObservable;
+
     const EVENT_SAVE_BEFORE       = 'entity_save_before';
     const EVENT_SAVE_AFTER        = 'entity_save_after';
     const EVENT_DELETE_BEFORE     = 'entity_delete_before';
@@ -19,19 +22,13 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
      * @var EntityRepositoryInterface
      */
     protected $repository;
-    /**
-     * @var EventService
-     */
-    protected $eventService;
 
     /**
      * @param EntityRepositoryInterface $repository
-     * @param EventService $eventService
      */
-    public function __construct(EntityRepositoryInterface $repository, EventService $eventService)
+    public function __construct(EntityRepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->eventService = $eventService;
     }
 
     /**
@@ -129,9 +126,9 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     public function save(AbstractEntity $item, array $oldData = [])
     {
         $eventData = ['service' => $this, 'item' => $item, 'oldData' => $oldData];
-        $this->eventService->trigger(self::EVENT_SAVE_BEFORE, $eventData);
+        $this->trigger(self::EVENT_SAVE_BEFORE, $eventData);
         $this->repository->save($item);
-        $this->eventService->trigger(self::EVENT_SAVE_AFTER, $eventData);
+        $this->trigger(self::EVENT_SAVE_AFTER, $eventData);
     }
 
     /**
@@ -141,9 +138,9 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     public function delete($id)
     {
         $eventData = ['service' => $this, 'id' => $id];
-        $this->eventService->trigger(self::EVENT_DELETE_BEFORE, $eventData);
+        $this->trigger(self::EVENT_DELETE_BEFORE, $eventData);
         $this->repository->delete($id);
-        $this->eventService->trigger(self::EVENT_DELETE_AFTER, $eventData);
+        $this->trigger(self::EVENT_DELETE_AFTER, $eventData);
     }
 
     /**
@@ -152,9 +149,9 @@ abstract class AbstractEntityService implements EntityRepositoryInterface
     public function deleteAll(Condition $condition = null)
     {
         $eventData = ['service' => $this, 'condition' => $condition];
-        $this->eventService->trigger(self::EVENT_DELETE_ALL_BEFORE, $eventData);
+        $this->trigger(self::EVENT_DELETE_ALL_BEFORE, $eventData);
         $this->repository->deleteAll($condition);
-        $this->eventService->trigger(self::EVENT_DELETE_ALL_AFTER, $eventData);
+        $this->trigger(self::EVENT_DELETE_ALL_AFTER, $eventData);
     }
 
     /**
