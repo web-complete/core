@@ -4,6 +4,7 @@ namespace WebComplete\core\cube;
 
 use Mvkasatkin\mocker\Mocker;
 use Symfony\Component\Cache\Simple\NullCache;
+use WebComplete\core\utils\container\ContainerAdapter;
 use WebComplete\core\utils\helpers\ClassHelper;
 
 class CubeManagerTest extends \CoreTestCase
@@ -82,5 +83,22 @@ class CubeManagerTest extends \CoreTestCase
         ]);
         $pm = new CubeManager($classHelper, new NullCache());
         $pm->findAll($dir);
+    }
+
+    public function testBootstrap()
+    {
+        /** @var ClassHelper $classHelper */
+        $classHelper = Mocker::create(ClassHelper::class);
+        $pm = new CubeManager($classHelper, new NullCache());
+        $registered = [
+            Mocker::create(AbstractCube::class, [
+                Mocker::method('bootstrap', 1)
+            ]),
+            Mocker::create(AbstractCube::class, [
+                Mocker::method('bootstrap', 1)
+            ]),
+        ];
+        Mocker::setProperty($pm, 'registered', $registered);
+        $pm->bootstrap(new ContainerAdapter());
     }
 }

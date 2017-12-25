@@ -11,6 +11,20 @@ class AbstractEntityTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('SOME_XML_ID', $entity->getId());
     }
 
+    public function testMagic()
+    {
+        $entity = new Entity1();
+        $this->assertTrue($entity->has('some'));
+        $this->assertFalse($entity->has('some2'));
+        $entity->set('some', '123');
+        $this->assertSame(123.0, $entity->get('some'));
+        $this->assertSame(123.0, $entity->some);
+        $this->assertSame(null, $entity->get('some2'));
+        $this->assertSame(null, $entity->some2);
+        $this->assertTrue(isset($entity->some));
+        $this->assertFalse(isset($entity->some2));
+    }
+
 }
 
 class Entity1 extends \WebComplete\core\entity\AbstractEntity {
@@ -20,6 +34,8 @@ class Entity1 extends \WebComplete\core\entity\AbstractEntity {
      */
     public static function fields(): array
     {
-        return [];
+        return [
+            'some' => \WebComplete\core\utils\typecast\Cast::FLOAT
+        ];
     }
 }
