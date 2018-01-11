@@ -96,17 +96,21 @@ class MigrationUpCommand extends Command
     protected function getNewMigrations(): array
     {
         $cubes = $this->cubeManager->getCubes();
-        $migrations = [[]];
+        $migrations = [];
         foreach ($cubes as $cube) {
-            $migrations[] = $cube->getMigrations();
+            foreach ($cube->getMigrations() as $k => $migration) {
+                $migrations[] = [$k, $migration];
+            }
         }
-        $allMigrations = \array_merge(...$migrations);
-        \ksort($allMigrations, \SORT_STRING & \SORT_ASC);
+        \uasort($migrations, function (array $data1, array $data2) {
+            return $data1[0] <=> $data2[0];
+        });
 
         $newMigrations = [];
-        foreach ($allMigrations as $k => $migrationClass) {
+        foreach ($migrations as $migrationData) {
+            $migrationClass = $migrationData[1];
             if (!$this->migrationService->isRegistered($migrationClass)) {
-                $newMigrations[$k] = $migrationClass;
+                $newMigrations[] = $migrationClass;
             }
         }
 
