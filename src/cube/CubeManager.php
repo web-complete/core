@@ -2,7 +2,7 @@
 
 namespace WebComplete\core\cube;
 
-use Psr\SimpleCache\CacheInterface;
+use WebComplete\core\utils\cache\CacheService;
 use WebComplete\core\utils\container\ContainerInterface;
 use WebComplete\core\utils\helpers\ClassHelper;
 
@@ -16,9 +16,9 @@ class CubeManager
      */
     protected $classHelper;
     /**
-     * @var CacheInterface
+     * @var CacheService
      */
-    protected $cache;
+    protected $cacheService;
     /**
      * @var array
      */
@@ -26,12 +26,12 @@ class CubeManager
 
     /**
      * @param ClassHelper $classHelper
-     * @param CacheInterface $cache
+     * @param CacheService $cacheService
      */
-    public function __construct(ClassHelper $classHelper, CacheInterface $cache)
+    public function __construct(ClassHelper $classHelper, CacheService $cacheService)
     {
         $this->classHelper = $classHelper;
-        $this->cache = $cache;
+        $this->cacheService = $cacheService;
     }
 
     /**
@@ -83,6 +83,9 @@ class CubeManager
      * @param array $definitions
      *
      * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \WebComplete\core\cube\CubeException
      */
     public function registerAll(string $directory, array &$definitions)
     {
@@ -102,11 +105,12 @@ class CubeManager
      */
     public function findAll($directory): array
     {
+        $cache = $this->cacheService->systemSimple();
         $key = \str_replace(['::', '\\'], '.', __METHOD__) . '.' . \crc32($directory);
-        $result = $this->cache->get($key);
+        $result = $cache->get($key);
         if (!$result) {
             $result = $this->classHelper->getClassMap($directory, self::FILENAME);
-            $this->cache->set($key, $result);
+            $cache->set($key, $result);
         }
         return $result;
     }

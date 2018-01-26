@@ -3,7 +3,9 @@
 namespace WebComplete\core\cube;
 
 use Mvkasatkin\mocker\Mocker;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Simple\NullCache;
+use WebComplete\core\utils\cache\CacheService;
 use WebComplete\core\utils\container\ContainerAdapter;
 use WebComplete\core\utils\helpers\ClassHelper;
 
@@ -13,7 +15,8 @@ class CubeManagerTest extends \CoreTestCase
     public function testInstance()
     {
         $classHelper = new ClassHelper();
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $this->assertInstanceOf(CubeManager::class, $pm);
     }
 
@@ -21,7 +24,8 @@ class CubeManagerTest extends \CoreTestCase
     {
         $p = Mocker::create(AbstractCube::class);
         $classHelper = new ClassHelper();
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $def = [];
         $pm->register(get_class($p), $def);
         $this->assertInstanceOf(get_class($p), $pm->getCube(get_class($p)));
@@ -31,7 +35,8 @@ class CubeManagerTest extends \CoreTestCase
     {
         $p = Mocker::create(AbstractCube::class);
         $classHelper = new ClassHelper();
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $def = [];
         $pm->register(get_class($p), $def);
         $this->assertEquals([
@@ -43,7 +48,8 @@ class CubeManagerTest extends \CoreTestCase
     {
         $this->expectException(CubeException::class);
         $classHelper = new ClassHelper();
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $pm->getCube('asd');
     }
 
@@ -52,7 +58,8 @@ class CubeManagerTest extends \CoreTestCase
         $this->expectException(CubeException::class);
         $p = Mocker::create(\stdClass::class);
         $classHelper = new ClassHelper();
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $def = [];
         $pm->register(get_class($p), $def);
     }
@@ -67,10 +74,11 @@ class CubeManagerTest extends \CoreTestCase
                 'SomeDir/SomeFile' => 'SomeClass'
             ])
         ]);
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
         /** @var CubeManager $pm */
         $pm = Mocker::create(CubeManager::class, [
             Mocker::method('register', 1, ['SomeClass', $def])
-        ], [$classHelper, new NullCache()]);
+        ], [$classHelper, $cacheService]);
         $pm->registerAll($dir, $def);
     }
 
@@ -81,7 +89,8 @@ class CubeManagerTest extends \CoreTestCase
         $classHelper = Mocker::create(ClassHelper::class, [
             Mocker::method('getClassMap', 1, [$dir, CubeManager::FILENAME])->returns([])
         ]);
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $pm->findAll($dir);
     }
 
@@ -89,7 +98,8 @@ class CubeManagerTest extends \CoreTestCase
     {
         /** @var ClassHelper $classHelper */
         $classHelper = Mocker::create(ClassHelper::class);
-        $pm = new CubeManager($classHelper, new NullCache());
+        $cacheService = new CacheService(new NullAdapter(), new NullAdapter());
+        $pm = new CubeManager($classHelper, $cacheService);
         $registered = [
             Mocker::create(AbstractCube::class, [
                 Mocker::method('bootstrap', 1)
