@@ -93,9 +93,9 @@ class StringHelper
 
     /**
      * @param $str
-     * @return mixed|string
+     * @return string
      */
-    public function str2url($str)
+    public function str2url($str): string
     {
         $str = $this->rus2translit($str);
         $str = \strtolower($str);
