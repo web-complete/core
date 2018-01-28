@@ -13,15 +13,15 @@ class Cache
     protected static $cacheService;
 
     /**
-     * @param string $key
+     * @param string|array $key
      *
      * @return mixed|null
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \RuntimeException
      */
-    public static function get(string $key)
+    public static function get($key)
     {
-        $item = self::getCacheService()->user()->getItem($key);
+        $item = self::getCacheService()->user()->getItem(self::key($key));
         if ($item->isHit()) {
             return $item->get();
         }
@@ -29,7 +29,7 @@ class Cache
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param $value
      * @param int|null $ttl
      * @param array $tags
@@ -38,10 +38,10 @@ class Cache
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Symfony\Component\Cache\Exception\InvalidArgumentException
      */
-    public static function set(string $key, $value, int $ttl = null, array $tags = [])
+    public static function set($key, $value, int $ttl = null, array $tags = [])
     {
         $cache = self::getCacheService()->user();
-        $item = $cache->getItem($key);
+        $item = $cache->getItem(self::key($key));
         $item->set($value);
         if ($ttl) {
             $item->expiresAfter($ttl);
@@ -53,7 +53,7 @@ class Cache
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param \Closure $closure
      * @param int|null $ttl
      * @param array $tags
@@ -63,9 +63,9 @@ class Cache
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \RuntimeException
      */
-    public static function getOrSet(string $key, \Closure $closure, int $ttl = null, array $tags = [])
+    public static function getOrSet($key, \Closure $closure, int $ttl = null, array $tags = [])
     {
-        $item = self::getCacheService()->user()->getItem($key);
+        $item = self::getCacheService()->user()->getItem(self::key($key));
         if ($item->isHit()) {
             return $item->get();
         }
@@ -83,14 +83,14 @@ class Cache
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      *
      * @throws \RuntimeException
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public static function invalidate(string $key)
+    public static function invalidate($key)
     {
-        self::getCacheService()->user()->deleteItem($key);
+        self::getCacheService()->user()->deleteItem(self::key($key));
     }
 
     /**
@@ -116,7 +116,7 @@ class Cache
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param int|null $ttl
      * @param array $tags
      *
@@ -124,7 +124,7 @@ class Cache
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \RuntimeException
      */
-    public static function html(string $key, int $ttl = null, array $tags = [])
+    public static function html($key, int $ttl = null, array $tags = [])
     {
         if ($content = self::get($key)) {
             echo $content;
@@ -132,7 +132,21 @@ class Cache
         }
 
         ob_start();
-        return new HtmlCache(self::getCacheService(), $key, $ttl, $tags);
+        return new HtmlCache(self::getCacheService(), self::key($key), $ttl, $tags);
+    }
+
+    /**
+     * Create PSR-6 valid key
+     * @param string|array $key
+     *
+     * @return string
+     */
+    public static function key($key): string
+    {
+        if (!\is_string($key)) {
+            $key = \json_encode($key);
+        }
+        return \preg_replace('/[\W]/', '_', $key);
     }
 
     /**

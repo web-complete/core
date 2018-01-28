@@ -73,4 +73,9 @@ class CacheTest extends \CoreTestCase
         $this->assertInstanceOf(CacheInterface::class, $cacheService->systemSimple());
         $this->assertInstanceOf(CacheInterface::class, $cacheService->userSimple());
     }
+
+    public function testKey()
+    {
+        $this->assertEquals('__var1___val1___var2___val2__', Cache::key(['var1' => 'val1', 'var2' => 'val2']));
+    }
 }

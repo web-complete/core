@@ -7,32 +7,33 @@ class CacheRuntime
     protected static $cache = [];
 
     /**
-     * @param string $key
+     * @param string|array $key
      *
      * @return mixed|null
      */
-    public static function get(string $key)
+    public static function get($key)
     {
-        return self::$cache[$key] ?? null;
+        return self::$cache[Cache::key($key)] ?? null;
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param $value
      */
-    public static function set(string $key, $value)
+    public static function set($key, $value)
     {
-        self::$cache[$key] = $value;
+        self::$cache[Cache::key($key)] = $value;
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      * @param \Closure $closure
      *
      * @return mixed
      */
-    public static function getOrSet(string $key, \Closure $closure)
+    public static function getOrSet($key, \Closure $closure)
     {
+        $key = Cache::key($key);
         if (!isset(self::$cache[$key])) {
             self::$cache[$key] = $closure();
         }
@@ -40,11 +41,11 @@ class CacheRuntime
     }
 
     /**
-     * @param string $key
+     * @param string|array $key
      */
-    public static function invalidate(string $key)
+    public static function invalidate($key)
     {
-        unset(self::$cache[$key]);
+        unset(self::$cache[Cache::key($key)]);
     }
 
     /**
