@@ -7,6 +7,14 @@ use Symfony\Component\Cache\CacheItem;
 
 class Cache
 {
+    const TTL_1MIN  = 60;
+    const TTL_5MIN  = 300;
+    const TTL_10MIN = 600;
+    const TTL_HOUR  = 3600;
+    const TTL_DAY   = 86400;
+    const TTL_WEEK  = 604800;
+    const TTL_MONTH = 2592000;
+
     /**
      * @var CacheService
      */
