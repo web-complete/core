@@ -108,6 +108,14 @@ class Cache
     }
 
     /**
+     * @throws \RuntimeException
+     */
+    public static function clear()
+    {
+        self::getCacheService()->user()->clear();
+    }
+
+    /**
      * @param string $key
      * @param int|null $ttl
      * @param array $tags

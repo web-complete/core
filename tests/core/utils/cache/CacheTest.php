@@ -26,6 +26,10 @@ class CacheTest extends \CoreTestCase
         $this->assertEquals('value2', Cache::get('test2'));
         Cache::invalidate('test2');
         $this->assertNull(Cache::get('test2'));
+
+        Cache::set('test21', 'value21');
+        Cache::clear();
+        $this->assertNull(Cache::get('test21'));
     }
 
     public function testSetGetClosure()
