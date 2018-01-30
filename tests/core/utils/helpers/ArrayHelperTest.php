@@ -10,12 +10,11 @@ class ArrayHelperTest extends TestCase
     public function testSetGetValue()
     {
         $data = [];
-        $arrayHelper = new ArrayHelper();
-        $arrayHelper->setValue($data, 'some.path1', 'value1');
+        ArrayHelper::setValue($data, 'some.path1', 'value1');
         $this->assertEquals(['some' => ['path1' => 'value1']], $data);
-        $arrayHelper->setValue($data, 'some.path1', 'value2');
+        ArrayHelper::setValue($data, 'some.path1', 'value2');
         $this->assertEquals(['some' => ['path1' => 'value2']], $data);
-        $this->assertEquals('value2', $arrayHelper->getValue($data, 'some.path1'));
+        $this->assertEquals('value2', ArrayHelper::getValue($data, 'some.path1'));
     }
 
     public function testMerge()
@@ -31,13 +30,12 @@ class ArrayHelperTest extends TestCase
             'k4' => 2,
             5
         ];
-        $arrayHelper = new ArrayHelper();
         $this->assertEquals([
             'k1' => [1,2,3,5,5],
             'k2' => ['a' => 1, 'b' => 3, 'c' => 4],
             'k3' => 1,
             'k4' => 2,
             5,
-        ], $arrayHelper->merge($array1, $array2));
+        ], ArrayHelper::merge($array1, $array2));
     }
 }

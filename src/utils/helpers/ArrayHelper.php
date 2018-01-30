@@ -43,7 +43,7 @@ class ArrayHelper
      * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
      */
-    public function getValue(array $array, $key, $default = null)
+    public static function getValue(array $array, $key, $default = null)
     {
         if ($key instanceof \Closure) {
             return $key($array, $default);
@@ -52,7 +52,7 @@ class ArrayHelper
         if (\is_array($key)) {
             $lastKey = \array_pop($key);
             foreach ((array)$key as $keyPart) {
-                $array = $this->getValue($array, $keyPart);
+                $array = self::getValue($array, $keyPart);
             }
             $key = $lastKey;
         }
@@ -62,7 +62,7 @@ class ArrayHelper
         }
 
         if (($pos = \strrpos($key, '.')) !== false) {
-            $array = $this->getValue($array, \substr($key, 0, $pos), $default);
+            $array = self::getValue($array, \substr($key, 0, $pos), $default);
             $key = (string)\substr($key, $pos + 1);
         }
 
@@ -132,7 +132,7 @@ class ArrayHelper
      * @param mixed $value the value to be written
      * @since 2.0.13
      */
-    public function setValue(array &$array, $path, $value)
+    public static function setValue(array &$array, $path, $value)
     {
         if ($path === null) {
             $array = $value;
@@ -168,7 +168,7 @@ class ArrayHelper
      * arrays via third argument, fourth argument etc.
      * @return array the merged array (the original arrays are not changed.)
      */
-    public function merge(array $array1, array $array2)
+    public static function merge(array $array1, array $array2): array
     {
         $args = \func_get_args();
         $result = \array_shift($args);
@@ -182,7 +182,7 @@ class ArrayHelper
                         $result[$k] = $v;
                     }
                 } elseif (\is_array($v) && isset($result[$k]) && \is_array($result[$k])) {
-                    $result[$k] = $this->merge($result[$k], $v);
+                    $result[$k] = self::merge($result[$k], $v);
                 } else {
                     $result[$k] = $v;
                 }
