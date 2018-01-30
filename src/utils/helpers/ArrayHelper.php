@@ -43,7 +43,7 @@ class ArrayHelper
      * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
      */
-    public function getValue($array, $key, $default = null)
+    public function getValue(array $array, $key, $default = null)
     {
         if ($key instanceof \Closure) {
             return $key($array, $default);
@@ -132,7 +132,7 @@ class ArrayHelper
      * @param mixed $value the value to be written
      * @since 2.0.13
      */
-    public function setValue(&$array, $path, $value)
+    public function setValue(array &$array, $path, $value)
     {
         if ($path === null) {
             $array = $value;
@@ -153,5 +153,42 @@ class ArrayHelper
         }
 
         $array[\array_shift($keys)] = $value;
+    }
+
+    /**
+     * Merges two or more arrays into one recursively.
+     * If each array has an element with the same string key value, the latter
+     * will overwrite the former (different from array_merge_recursive).
+     * Recursive merging will be conducted if both arrays have an element of array
+     * type and are having the same key.
+     * For integer-keyed elements, the elements from the latter array will
+     * be appended to the former array.
+     * @param array $array1 array to be merged to
+     * @param array $array2 array to be merged from. You can specify additional
+     * arrays via third argument, fourth argument etc.
+     * @return array the merged array (the original arrays are not changed.)
+     */
+    public function merge(array $array1, array $array2)
+    {
+        $args = \func_get_args();
+        $result = \array_shift($args);
+        while (!empty($args)) {
+            $next = \array_shift($args);
+            foreach ((array)$next as $k => $v) {
+                if (\is_int($k)) {
+                    if (\array_key_exists($k, $result)) {
+                        $result[] = $v;
+                    } else {
+                        $result[$k] = $v;
+                    }
+                } elseif (\is_array($v) && isset($result[$k]) && \is_array($result[$k])) {
+                    $result[$k] = $this->merge($result[$k], $v);
+                } else {
+                    $result[$k] = $v;
+                }
+            }
+        }
+
+        return $result;
     }
 }
