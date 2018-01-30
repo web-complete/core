@@ -7,7 +7,7 @@ class Paginator
     const DEFAULT_ITEMS_PER_PAGE = 25;
 
     protected $currentPage = 1;
-    protected $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE;
+    protected $itemsPerPage = 0;
     protected $total = 0;
 
     /**
@@ -65,6 +65,9 @@ class Paginator
      */
     public function getPageCount(): int
     {
+        if (!$this->getItemsPerPage()) {
+            return 0;
+        }
         return (int)\ceil($this->getTotal() / $this->getItemsPerPage());
     }
 
@@ -124,8 +127,8 @@ class Paginator
         if ($this->currentPage < 1) {
             $this->currentPage = 1;
         }
-        if ($this->itemsPerPage < 1) {
-            $this->itemsPerPage = 1;
+        if ($this->itemsPerPage < 0) {
+            $this->itemsPerPage = 0;
         }
         if ($this->total < 0) {
             $this->total = 0;

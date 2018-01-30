@@ -10,6 +10,7 @@ class PaginatorTest extends \CoreTestCase
     public function testPaginator()
     {
         $paginator = new Paginator();
+        $paginator->setItemsPerPage(25);
         $this->assertEquals(0, $paginator->getTotal());
         $this->assertEquals(25, $paginator->getItemsPerPage());
         $this->assertEquals(1, $paginator->getCurrentPage());
