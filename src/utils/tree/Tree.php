@@ -75,7 +75,7 @@ class Tree
     /**
      * @param $id
      *
-     * @return array
+     * @return AbstractEntity[]
      */
     public function getChildren($id): array
     {
