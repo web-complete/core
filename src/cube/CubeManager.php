@@ -106,7 +106,7 @@ class CubeManager
     public function findAll($directory): array
     {
         $cache = $this->cacheService->systemSimple();
-        $key = \str_replace(['::', '\\'], '.', __METHOD__) . '.' . \crc32($directory);
+        $key = \str_replace(['::', '\\'], '_', __METHOD__) . '_' . \crc32($directory);
         $result = $cache->get($key);
         if (!$result) {
             $result = $this->classHelper->getClassMap($directory, self::FILENAME);
