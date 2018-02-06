@@ -14,7 +14,7 @@ class StringHelper
      * @param string $input the string to encode.
      * @return string encoded string.
      */
-    public function base64UrlEncode($input): string
+    public static function base64UrlEncode($input): string
     {
         return \strtr(\base64_encode($input), '+/', '-_');
     }
@@ -26,7 +26,7 @@ class StringHelper
      * @param string $input encoded string.
      * @return string decoded string.
      */
-    public function base64UrlDecode($input): string
+    public static function base64UrlDecode($input): string
     {
         return \base64_decode(\strtr($input, '-_', '+/'));
     }
@@ -37,7 +37,7 @@ class StringHelper
      * @param string $string the string being measured for length
      * @return int the number of bytes in the given string.
      */
-    public function byteLength($string): int
+    public static function byteLength($string): int
     {
         return \mb_strlen($string, '8bit');
     }
@@ -52,7 +52,7 @@ class StringHelper
      * @return string the extracted part of string, or FALSE on failure or an empty string.
      * @see http://www.php.net/manual/en/function.substr.php
      */
-    public function byteSubstr($string, $start, $length = null): string
+    public static function byteSubstr($string, $start, $length = null): string
     {
         return \mb_substr($string, $start, $length ?? \mb_strlen($string, '8bit'), '8bit');
     }
@@ -61,7 +61,7 @@ class StringHelper
      * @param $string
      * @return string
      */
-    public function rus2translit($string): string
+    public static function rus2translit($string): string
     {
         $converter = [
             'а' => 'a', 'б' => 'b', 'в' => 'v',
@@ -95,9 +95,9 @@ class StringHelper
      * @param $str
      * @return string
      */
-    public function str2url(string $str): string
+    public static function str2url(string $str): string
     {
-        $str = $this->rus2translit($str);
+        $str = self::rus2translit($str);
         $str = \strtolower($str);
         $str = \preg_replace('~[^-a-z0-9]+~u', '-', $str);
         $str = \trim($str, '-');
@@ -108,7 +108,7 @@ class StringHelper
      * @param string $html
      * @return string
      */
-    public function html2text(string $html): string
+    public static function html2text(string $html): string
     {
         $html = \str_replace(
             ["\n", '<br>', '<br/>', '<br />', '</div>', '</p>', '</h1>', '</h2>', '</h3>'],

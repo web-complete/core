@@ -9,14 +9,14 @@ class SecurityHelperTest extends TestCase
 
     public function testCryptPassword()
     {
-        $helper = new SecurityHelper(new StringHelper());
+        $helper = new SecurityHelper();
         $expected = \strtoupper(\md5(\md5('bbb') . \md5('aaa')));
         $this->assertEquals($expected, $helper->cryptPassword('aaa', 'bbb'));
     }
 
     public function testMaskToken()
     {
-        $helper = new SecurityHelper(new StringHelper());
+        $helper = new SecurityHelper();
         $maskedToken = $helper->maskToken('123');
         $unmaskToken = $helper->unmaskToken($maskedToken);
 
@@ -26,7 +26,7 @@ class SecurityHelperTest extends TestCase
 
     public function testGenerateRandomString()
     {
-        $helper = new SecurityHelper(new StringHelper());
+        $helper = new SecurityHelper();
         $string1 = $helper->generateRandomString(50);
         $string2 = $helper->generateRandomString(50);
         $this->assertEquals(50, strlen($string1));

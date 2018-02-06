@@ -6,16 +6,6 @@ class SecurityHelper
 {
 
     /**
-     * @var StringHelper
-     */
-    protected $stringHelper;
-
-    public function __construct(StringHelper $stringHelper)
-    {
-        $this->stringHelper = $stringHelper;
-    }
-
-    /**
      * @param string $password
      * @param string $salt
      *
@@ -39,8 +29,8 @@ class SecurityHelper
     public function maskToken($token): string
     {
         // The number of bytes in a mask is always equal to the number of bytes in a token.
-        $mask = $this->generateRandomKey($this->stringHelper->byteLength($token));
-        return $this->stringHelper->base64UrlEncode($mask . ($mask ^ $token));
+        $mask = $this->generateRandomKey(StringHelper::byteLength($token));
+        return StringHelper::base64UrlEncode($mask . ($mask ^ $token));
     }
 
     /**
@@ -50,14 +40,14 @@ class SecurityHelper
      */
     public function unmaskToken($maskedToken): string
     {
-        $decoded = $this->stringHelper->base64UrlDecode($maskedToken);
-        $length = $this->stringHelper->byteLength($decoded) / 2;
+        $decoded = StringHelper::base64UrlDecode($maskedToken);
+        $length = StringHelper::byteLength($decoded) / 2;
         // Check if the masked token has an even length.
         if (!is_int($length)) {
             return '';
         }
-        return $this->stringHelper->byteSubstr($decoded, $length, $length) ^
-            $this->stringHelper->byteSubstr($decoded, 0, $length);
+        return StringHelper::byteSubstr($decoded, $length, $length) ^
+            StringHelper::byteSubstr($decoded, 0, $length);
     }
 
     /**
@@ -100,6 +90,6 @@ class SecurityHelper
         }
 
         $bytes = $this->generateRandomKey($length);
-        return \substr($this->stringHelper->base64UrlEncode($bytes), 0, $length);
+        return \substr(StringHelper::base64UrlEncode($bytes), 0, $length);
     }
 }
