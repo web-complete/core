@@ -24,6 +24,17 @@ abstract class AbstractFactory
     }
 
     /**
+     * Get an instance
+     *
+     * @param $name
+     * @return mixed
+     */
+    protected function get($name)
+    {
+        return $this->container->get($name);
+    }
+
+    /**
      * Create an instance
      *
      * @param $name
