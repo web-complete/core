@@ -92,28 +92,28 @@ class StringHelper
     }
 
     /**
-     * @param $str
+     * @param $string
      * @return string
      */
-    public static function str2url(string $str): string
+    public static function str2url($string): string
     {
-        $str = self::rus2translit($str);
-        $str = \strtolower($str);
-        $str = \preg_replace('~[^-a-z0-9]+~u', '-', $str);
-        $str = \trim($str, '-');
-        return $str;
+        $string = self::rus2translit((string)$string);
+        $string = \strtolower($string);
+        $string = \preg_replace('~[^-a-z0-9]+~u', '-', $string);
+        $string = \trim($string, '-');
+        return $string;
     }
 
     /**
      * @param string $html
      * @return string
      */
-    public static function html2text(string $html): string
+    public static function html2text($html): string
     {
         $html = \str_replace(
             ["\n", '<br>', '<br/>', '<br />', '</div>', '</p>', '</h1>', '</h2>', '</h3>'],
             [' ', "\n", "\n", "\n", "</div>\n", "</p>\n", "</h1>\n", "</h2>\n", "</h3>\n"],
-            $html
+            (string)$html
         );
 
         return \htmlspecialchars(\trim(\strip_tags($html)));
