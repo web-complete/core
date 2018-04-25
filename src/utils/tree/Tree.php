@@ -114,6 +114,10 @@ class Tree
             isset($this->childrenIds[$parentId])
                 ? $this->childrenIds[$parentId][] = $id
                 : $this->childrenIds[$parentId] = [$id];
+
+            if (!$parentId) {
+                $this->root[] = $item->getId();
+            }
         }
     }
 }

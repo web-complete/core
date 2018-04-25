@@ -14,7 +14,7 @@ trait TreeItemTrait
     /**
      * @param self|AbstractEntity $item
      */
-    public function setParent($item)
+    public function setParent(AbstractEntity $item)
     {
         $this->parent = $item;
     }
@@ -30,7 +30,7 @@ trait TreeItemTrait
     /**
      * @param self|AbstractEntity $item
      */
-    public function addChild($item)
+    public function addChild(AbstractEntity $item)
     {
         $this->children[$item->getId()] = $item;
     }
